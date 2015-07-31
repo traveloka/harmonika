@@ -1,6 +1,6 @@
 import fs from 'fs';
 import merge from 'lodash/object/merge.js';
-import codeGenerator from 'escodegen';
+import codeGenerator from './utils/escodegen.js';
 import formatter from 'esformatter';
 import astGenerator from './utils/ast-generator.js';
 
