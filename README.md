@@ -17,6 +17,7 @@ $ node bin/index.js -s input_files/sample2.js
 ```
 
 ## Directory Structure
+```bash
 * bin /
   | - index.js (main entry)
 * input_files /(sample)
@@ -26,6 +27,7 @@ $ node bin/index.js -s input_files/sample2.js
   | - transformation / (list of parser function)
   | - utils / (string->ast && ast -> string library)
 * test /
+```
 
 ## Previous project existing features
 * Function/Prototypes to Classes
