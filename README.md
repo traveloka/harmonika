@@ -27,6 +27,7 @@ $ node bin/index.js -s input_files/sample2.js
   | - utils / (string->ast && ast -> string library)
 * test /
 
+## Previous project existing features
 * Function/Prototypes to Classes
 * Callback to Arrow functions
 * String concatenation to Template Strings
