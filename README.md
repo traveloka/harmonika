@@ -23,7 +23,7 @@ $ node bin/index.js -s input_files/sample2.js
 * input_files /(sample)
 * src /
   | - syntax /
-      | - AST representation (reference [https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Parser_API](Mozilla AST))
+      | - AST representation (reference [Mozilla AST](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Parser_API))
   | - transformation / (list of parser function)
   | - utils / (string->ast && ast -> string library)
 * test /
