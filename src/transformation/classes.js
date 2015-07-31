@@ -6,7 +6,9 @@ import ThisExpression from './../syntax/this-expression.js';
 import MemberExpression from './../syntax/member-expression.js';
 import CallExpression from './../syntax/call-expression.js';
 import ReturnStatement from './../syntax/return-statement.js';
+import ExportDeclaration from './../syntax/export-declaration.js';
 import merge from 'lodash/object/merge.js';
+import union from 'lodash/array/union.js';
 
 export default
   function (ast, param, callback) {
@@ -45,7 +47,7 @@ function createClass(_function) {
     let constructor = new MethodDefinition();
     constructor.name = 'constructor';
     constructor.body = _function.node.body;
-    constructor.leadingComments = _function.node.leadingComments;
+    constructor.leadingComments = union(_function.parent.leadingComments, _function.node.leadingComments);
     constructor.params =  _function.node.params;
 
     let superClassName = detectInheritance(constructor.body);
@@ -232,6 +234,13 @@ function classReplacement(node) {
   } else if (node._remove) {
     this.remove();
   } else if (node._replace) {
+
+    if(options.addExport) {
+      let exportDeclaration = new ExportDeclaration();
+      exportDeclaration.declaration = node._replace._class;
+      return exportDeclaration;
+    }
+
     return node._replace._class;
   }
 }

@@ -1,9 +1,3 @@
-class ArrowExpression extends BaseSyntax {
-  constructor() {
-    super('ArrowFunctionExpression');
-  }
-}
-
 goog.provide('tv.service.flight.FlightBookingService');
 
 goog.require('tv.service.TvServiceBase');

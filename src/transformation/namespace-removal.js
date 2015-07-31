@@ -33,8 +33,7 @@ function namespaceDetector(node, parent) {
 
   if(node.type === 'ExpressionStatement' && node.expression.type === 'AssignmentExpression' && !leftNodeHasPrototype(node.expression)){
 
-    let nodeToProcess = node.expression;
-    newNode = assignmentExpressionHandler(nodeToProcess, parent);
+    newNode = assignmentExpressionHandler(node.expression, node);
 
   }else if (node.type === 'AssignmentExpression') {
 
