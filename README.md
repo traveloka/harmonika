@@ -16,7 +16,16 @@ $ node bin/index.js --help
 $ node bin/index.js -s input_files/sample2.js
 ```
 
-## Previous project existing features
+## Directory Structure
+* bin /
+  | - index.js (main entry)
+* input_files /(sample)
+* src /
+  | - syntax /
+      | - AST representation (reference [https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Parser_API](Mozilla AST))
+  | - transformation / (list of parser function)
+  | - utils / (string->ast && ast -> string library)
+* test /
 
 * Function/Prototypes to Classes
 * Callback to Arrow functions
