@@ -7,6 +7,7 @@ Clone this project
 
 ```bash
 $ npm install
+$ grunt
 $ npm bin/index.js --help
 ```
 
