@@ -8,12 +8,12 @@ Clone this project
 ```bash
 $ npm install
 $ grunt
-$ npm bin/index.js --help
+$ node bin/index.js --help
 ```
 
 ## Sample Usage
 ```bash
-$ npm bin/index.js -s input_files/sample2.js
+$ node bin/index.js -s input_files/sample2.js
 ```
 
 ## Previous project existing features
