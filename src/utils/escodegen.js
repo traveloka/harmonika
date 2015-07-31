@@ -1,3 +1,4 @@
+
 /*
   Copyright (C) 2012-2014 Yusuke Suzuki <utatane.tea@gmail.com>
   Copyright (C) 2015 Ingvar Stepanyan <me@rreverser.com>
@@ -32,8 +33,7 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*global exports:true, require:true, global:true*/
+/* jshint ignore:start */
 //(function () {
     'use strict';
 
@@ -2557,3 +2557,4 @@
     exports.FORMAT_DEFAULTS = FORMAT_DEFAULTS;
 //}());
 /* vim: set sw=4 ts=4 et tw=80 : */
+/* jshint ignore:end */
