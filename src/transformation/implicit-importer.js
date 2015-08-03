@@ -24,7 +24,11 @@ export default
     }
   }
 
-var unidentifiedIdentifier = [], identifiedIdentifier = [];
+var unidentifiedIdentifier = [],
+  identifiedIdentifier = [],
+  defaultImportSource = {
+    '$' : 'jQuery'
+  };
 
 function importDetector(node) {
 
@@ -61,13 +65,14 @@ function importGenerator(ast) {
   for(let i=0; i<unidentifiedIdentifier.length; i++) {
 
     let name = unidentifiedIdentifier[i];
+    let source = defaultImportSource[name] || name;
 
     let specifier = new ImportDefaultSpecifier();
     specifier.setIdentifierName(name);
 
     let importDeclaration = new ImportDeclaration();
     importDeclaration.addSpecifier(specifier);
-    importDeclaration.setLiteral(name);
+    importDeclaration.setLiteral(source);
 
     ast.body.unshift(importDeclaration);
   }
