@@ -33,7 +33,7 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-/* jshint ignore:start */
+/* jshint ignore:start */t
 //(function () {
     'use strict';
 
