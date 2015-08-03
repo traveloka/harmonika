@@ -43,8 +43,16 @@ grunt.initConfig({
       },
       src: ['test/**/*.js']
     }
+  },
+  browserify: {
+    dist: {
+      files: {
+        'live-demo/bundle.js': ['live-demo/main.js']
+      }
+    }
   }
 });
 
 grunt.registerTask('default', ['clean', 'babel']);
 grunt.registerTask('test', ['jshint', 'default', 'mochaTest']);
+grunt.registerTask('build-demo', ['test', 'browserify']);

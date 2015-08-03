@@ -7,7 +7,6 @@ export default
   function (ast, callback) {
 
     unidentifiedIdentifier = [];
-    identifiedIdentifier = [];
 
     estraverse.traverse(ast, {
       enter: importDetector
@@ -25,7 +24,7 @@ export default
   }
 
 var unidentifiedIdentifier = [],
-  identifiedIdentifier = [],
+  identifiedIdentifier = ['Object', 'console'],
   defaultImportSource = {
     '$' : 'jQuery'
   };

@@ -138,7 +138,7 @@ function namespaceRootDetector(node) {
 
 function leftNodeHasPrototype(node){
 
-  if(node.left.object.property && node.left.object.property.name === 'prototype') {
+  if(node.left.object && node.left.object.property && node.left.object.property.name === 'prototype') {
     return true;
   }
 
