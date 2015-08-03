@@ -24,7 +24,7 @@ export default
   }
 
 var unidentifiedIdentifier = [],
-  identifiedIdentifier = ['Object', 'console'],
+  identifiedIdentifier = ['Object', 'console', 'JSON'],
   defaultImportSource = {
     '$' : 'jQuery'
   };
