@@ -44,8 +44,8 @@ $ node bin/index.js -s input_files/sample2.js
 - Fix existing constructor to support arguments
 - `import` support
 - `export` support
+- Implicit import
 
 ## To-do Features
-- [ ] Implicit import
 - [ ] Create test file for each parsed file
 - [ ] Support Flow syntax

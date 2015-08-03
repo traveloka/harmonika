@@ -13,6 +13,7 @@ import arrowFunctionTransformation from './transformation/arrow-functions.js';
 import letTransformation from './transformation/let.js';
 import defaultArgsTransformation from './transformation/default-arguments.js';
 import objectMethodsTransformation from './transformation/object-methods.js';
+import implicitImporterTransformation from './transformation/implicit-importer.js';
 
 export default
 class Transformer {
@@ -59,6 +60,7 @@ class Transformer {
     doTransform('googRemoval', gooRemovalTransformation, {}, function(fileName){
       self.fileName = fileName;
     });
+    doTransform('implicitImporter', implicitImporterTransformation);
 
     doTransform('classes', classTransformation, { addExport: this.options.addExport });
     doTransform('stringTemplates', templateStringTransformation);
@@ -174,7 +176,8 @@ Transformer.defaultOptions = {
     objectMethods: true,
     namespaceRemoval : true,
     googRemoval : true,
-    addExport : true
+    addExport : true,
+    implicitImporter: true
   },
   formatter: false,
   escodegenOptions: {
