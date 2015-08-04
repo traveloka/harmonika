@@ -7,17 +7,16 @@ module.exports = function (options) {
   var transOptions = {
     transformers: {
       generateTest : true
-    },
-    sourceDir : 'src',
-    testDir : 'test'
+    }
   };
-  var sourceDir = transOptions.sourceDir, testDir = transOptions.testDir;
+
 
   if(!options.noClass) {
     transOptions.transformers.classes = false;
   }
 
   var transformer = new Transformer(transOptions);
+  var sourceDir = transformer.getOptions().sourceDir, testDir = transformer.getOptions().testDir;
 
   for(var i=0; i<options.files.length; i++){
     var file = options.files[i];
