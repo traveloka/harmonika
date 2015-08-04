@@ -26,7 +26,7 @@ export default
 var unidentifiedIdentifier = [],
   identifiedIdentifier = ['Object', 'console', 'JSON'],
   defaultImportSource = {
-    '$' : 'jQuery'
+    '$' : 'jquery'
   };
 
 function importDetector(node) {

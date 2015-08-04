@@ -5,8 +5,11 @@ var mkdirp = require('mkdirp');
 
 module.exports = function (options) {
   var transOptions = {
-    transformers: {}
+    transformers: {
+      generateTest : true
+    }
   };
+  var sourceDir = 'src', testDir = 'test';
 
   if(!options.noClass) {
     transOptions.transformers.classes = false;
@@ -24,17 +27,32 @@ module.exports = function (options) {
     var outputFileName = transformer.fileName;
     var outputFile = '';
     if(!outputFileName){
-      outputFile = path.join(options.outFolder, path.basename(file));
-    }else{
-      var dirname = path.dirname(outputFileName);
-      var completeDirName = path.join(options.outFolder, dirname);
-      mkdirp.sync(completeDirName);
-      outputFile = path.join(options.outFolder, outputFileName);
+      outputFileName = path.basename(file);
     }
 
-    transformer.writeFile(outputFile);
+    var sourceFileName = path.join(sourceDir, outputFileName);
+    var dirname = path.dirname(sourceFileName);
+    var completeDirName = path.join(options.outFolder, dirname);
+    mkdirp.sync(completeDirName);
 
+
+    outputFile = path.join(options.outFolder, sourceFileName);
+    transformer.writeFile(outputFile);
     console.log(('The file "' + outputFile + '" has been written.').green);
+
+    if(transOptions.transformers.generateTest) {
+      var testFileName = path.join(testDir, outputFileName);
+      var testDirname = path.dirname(testFileName);
+      var completeTestDirName = path.join(options.outFolder, testDirname);
+      mkdirp.sync(completeTestDirName);
+
+      var outputTestFile = path.join(options.outFolder, testFileName);
+      transformer.writeTestFile(outputTestFile);
+
+      console.log(('The test file "' + outputTestFile + '" has been written.').yellow);
+    }
+
+
   }
 
 };

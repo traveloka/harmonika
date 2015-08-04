@@ -15,10 +15,10 @@ function test(script) {
 
 describe('Implicit Importer', function () {
 
-  it('should import $ from jQuery', function () {
+  it('should import $ from jquery', function () {
     var script = '$.ajax({});';
 
-    expect(test(script)).to.be.equal('import $ from \'jQuery\';\n$.ajax({});');
+    expect(test(script)).to.be.equal('import $ from \'jquery\';\n$.ajax({});');
   });
 
   it('should import _', function () {

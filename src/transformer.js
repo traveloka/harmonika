@@ -14,6 +14,7 @@ import letTransformation from './transformation/let.js';
 import defaultArgsTransformation from './transformation/default-arguments.js';
 import objectMethodsTransformation from './transformation/object-methods.js';
 import implicitImporterTransformation from './transformation/implicit-importer.js';
+import generateTest from './transformation/generate-test.js';
 
 export default
 class Transformer {
@@ -24,6 +25,7 @@ class Transformer {
   constructor(options = {}) {
 
     this.ast = {};
+    this.astTest = {};
     this.options = merge(this.constructor.defaultOptions, options);
     this.transformations = [];
     this.fileName = null;
@@ -144,6 +146,18 @@ class Transformer {
   }
 
   /**
+   * Returns the test code string
+   *
+   * @returns {Object}
+   */
+  outTest() {
+    let result;
+    result = codeGenerator.generate(this.astTest, this.options.escodegenOptions);
+
+    return result;
+  }
+
+  /**
    * Writes the code on file
    *
    * @param filename
@@ -152,6 +166,35 @@ class Transformer {
   writeFile(filename, callback) {
 
     const code = this.out();
+
+    if(typeof callback === 'function') {
+      fs.writeFile(filename, code, callback);
+    } else {
+      fs.writeFileSync(filename, code);
+    }
+
+  }
+
+  /**
+   * Writes the test file
+   *
+   * @param filename
+   * @param callback
+   */
+  writeTestFile(filename, callback) {
+
+    if(!this.options.transformers.generateTest) {
+      return;
+    }
+
+    this.astTest = astGenerator.readFile(this.options.testTemplate, {
+      sync: true,
+      ecmaVersion: 6
+    });
+
+    generateTest(this.ast, this.astTest);
+
+    const code = this.outTest();
 
     if(typeof callback === 'function') {
       fs.writeFile(filename, code, callback);
@@ -177,8 +220,10 @@ Transformer.defaultOptions = {
     namespaceRemoval : true,
     googRemoval : true,
     addExport : true,
-    implicitImporter: true
+    implicitImporter: true,
+    generateTest : false
   },
+  testTemplate : './src/tpl/spec.js',
   formatter: false,
   escodegenOptions: {
     format: {
