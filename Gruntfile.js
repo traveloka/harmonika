@@ -47,7 +47,7 @@ grunt.initConfig({
   browserify: {
     dist: {
       files: {
-        'live-demo/bundle.js': ['live-demo/main.js']
+        'live-demo/js/bundle.js': ['live-demo/js/main.js']
       }
     }
   }

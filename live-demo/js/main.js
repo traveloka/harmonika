@@ -1,7 +1,7 @@
 /**
  * Created by traveloka on 03/08/15.
  */
-var Transformer = require('../lib/transformer');
+var Transformer = require('../../lib/transformer');
 
 var editor = ace.edit("es5");
 editor.getSession().setMode("ace/mode/javascript");
