@@ -192,7 +192,7 @@ class Transformer {
       ecmaVersion: 6
     });
 
-    generateTest(this.ast, this.astTest);
+    generateTest(this.ast, this.astTest, '../'+ this.options.sourceDir + '/' +this.fileName);
 
     const code = this.outTest();
 
@@ -232,5 +232,7 @@ Transformer.defaultOptions = {
       }
     },
     comment: true
-  }
+  },
+  sourceDir : 'src',
+  testDir : 'test'
 };

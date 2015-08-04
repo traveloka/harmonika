@@ -7,9 +7,11 @@ module.exports = function (options) {
   var transOptions = {
     transformers: {
       generateTest : true
-    }
+    },
+    sourceDir : 'src',
+    testDir : 'test'
   };
-  var sourceDir = 'src', testDir = 'test';
+  var sourceDir = transOptions.sourceDir, testDir = transOptions.testDir;
 
   if(!options.noClass) {
     transOptions.transformers.classes = false;

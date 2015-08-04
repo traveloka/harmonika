@@ -4,13 +4,14 @@
 import estraverse from 'estraverse';
 import Identifier from './../syntax/identifier.js';
 import ImportDefaultSpecifier from './../syntax/import-default-specifier.js';
+import ImportDeclaration from './../syntax/import-declaration.js';
 import Literal from './../syntax/literal.js';
 import CallExpression from './../syntax/call-expression.js';
 import ExpressionStatement from './../syntax/expression-statement.js';
 import FunctionExpression from './../syntax/function-expression.js';
 
 export default
-  function (ast, specAst) {
+  function (ast, specAst, mainFileLocation) {
 
     functions = [];
 
@@ -22,9 +23,23 @@ export default
       enter: contextReplace
     });
 
+    importClass(specAst, mainFileLocation);
+
   }
 
 var functions = [], className = null;
+
+function importClass(ast, mainFileLocation) {
+
+  let specifier = new ImportDefaultSpecifier();
+  specifier.setIdentifierName(className);
+
+  let importDeclaration = new ImportDeclaration();
+  importDeclaration.addSpecifier(specifier);
+  importDeclaration.setLiteral(mainFileLocation);
+
+  ast.body.unshift(importDeclaration);
+}
 
 function functionDetector(node) {
 
