@@ -32,7 +32,7 @@ function functionDetector(node) {
     className = node.id.name;
   }
 
-  if (node.type === 'MethodDefinition') {
+  if (node.type === 'MethodDefinition' && node.key.name !== 'constructor') {
     functions.push(node.key.name);
   }
 
