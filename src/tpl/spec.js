@@ -1,4 +1,3 @@
-/* jshint ignore:start */
 import chai from 'chai';
 import sinon from 'sinon';
 import sinon_chai from 'sinon-chai';
@@ -25,4 +24,3 @@ describe('description', function() {
   });
 
 });
-/* jshint ignore:end */

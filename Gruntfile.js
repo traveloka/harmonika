@@ -10,7 +10,7 @@ grunt.initConfig({
       files:  [{
         "expand": true,
         "cwd": "src/",
-        "src": ["**/*.js"],
+        "src": ["**/*.js", "!tpl/*.js"],
         "dest": "lib/",
         "ext": ".js"
       }]
@@ -30,7 +30,7 @@ grunt.initConfig({
       jshintrc: '.jshintrc'
     },
     allFiles: [
-      'src/**/*.js'
+      'src/**/*.js', '!src/**/spec.js'
     ]
   },
   clean: {
