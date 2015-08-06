@@ -1,13 +1,17 @@
-export default
-class SomeClass {
-  constructor() {
-    console.log('This is the constructor.');
+/**
+ * Created by traveloka on 06/08/15.
+ */
+var analyzeAjaxResponseState = function(jqXHR, textStatus) {
+  var responseState = tv.jq.ajaxResponseState;
+  var textStatusEnum = tv.jq.textStatus;
+  if (jqXHR.status == 200) {
+    return responseState.SUCCESS;
   }
-  someOuterMethod() {
-    return someFunction.apply(this, arguments);
+
+  // TODO: Better detection of online/offline.
+  if (textStatus == textStatusEnum.TIMEOUT) {
+    return responseState.OFFLINE;
   }
-  someInnerMethod(birthYear) {
-    const result = `Your Age is : ${ 2015 - birthYear } and you were born in ${ birthYear }`;
-    return result;
-  }
-}
+
+  return responseState.ERROR;
+};
