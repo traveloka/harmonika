@@ -43,7 +43,7 @@ describe('Namespace removal', function () {
     expect(test(script)).to.equal('c.call(this, x, y);');
   });
 
-  it('should remove namespace from call', function () {
+  it('should not remove this', function () {
     var script = 'this._getAPIUrl(this.API.PAX_VALIDATION);';
 
     expect(test(script)).to.equal('this._getAPIUrl(this.API.PAX_VALIDATION);');

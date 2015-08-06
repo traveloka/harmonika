@@ -7,7 +7,8 @@ module.exports = function (options) {
   var transOptions = {
     transformers: {
       generateTest : true
-    }
+    },
+    addExport : false
   };
 
 

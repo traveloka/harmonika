@@ -207,7 +207,7 @@ class Transformer {
   get fileName () { return this._fileName; }
   set fileName (name) { this._fileName = name; }
 
-  getOptions () { return this.options }
+  getOptions () { return this.options; }
 
 }
 

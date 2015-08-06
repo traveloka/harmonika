@@ -44,8 +44,13 @@ $ node bin/index.js -s input_files/sample2.js
 - Fix existing constructor to support arguments
 - `import` support
 - `export` support
-- Implicit import
+- Implicit import (import all undefined identifier)
 
 ## To-do Features
 - [ ] Create test file for each parsed file
-- [ ] Support Flow syntax
+- [ ] Flow syntax
+- [ ] Static method
+- [ ] Static properties
+- [ ] Singleton export 
+- [ ] Superclass method call
+- [ ] save typedef state
