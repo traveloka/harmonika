@@ -4,6 +4,11 @@
 import estraverse from 'estraverse';
 import ImportDefaultSpecifier from './../syntax/import-default-specifier.js';
 import ImportDeclaration from './../syntax/import-declaration.js';
+import Identifier from './../syntax/identifier.js';
+import VariableDeclaration from './../syntax/variable-declaration.js';
+import VariableDeclarator from './../syntax/variable-declarator.js';
+import ObjectExpression from './../syntax/object-expression.js';
+import ExportDeclaration from './../syntax/export-declaration.js';
 import path from 'path';
 
 export default
@@ -17,12 +22,39 @@ function (ast, param, callback) {
     enter: googDetector
   });
 
+  estraverse.traverse(ast, {
+    enter: providedAvailability
+  });
+
+  if(!providedNameDefined){
+    let className = new Identifier();
+    className.name = providedName;
+
+    let variableDeclarator = new VariableDeclarator();
+    variableDeclarator.id = className;
+    variableDeclarator.init = new ObjectExpression();
+
+    let variableDeclaration = new VariableDeclaration();
+    variableDeclaration.addDeclaration(variableDeclarator);
+
+    for (let i=0; i<ast.body.length; i++){
+      if(ast.body[i].type !== 'ImportDeclaration') {
+        ast.body.splice(i, 0, variableDeclaration);
+        break;
+      }
+    }
+
+    let exportDeclaration = new ExportDeclaration();
+    exportDeclaration.declaration = className;
+    ast.body.push(exportDeclaration);
+  }
+
   if(callback){
     callback(fileName);
   }
 }
 
-var fileName = null;
+var fileName = null, providedName = null, providedNameDefined = false;;
 
 function googProvideDetector(node){
 
@@ -35,6 +67,7 @@ function googProvideDetector(node){
       let argument = callExpressionNode.arguments[0].value;
       let argumentParts = argument.split('.');
       fileName = argumentParts.reduce( (part1, part2) => path.join(part1, part2) ) + '.js';
+      providedName = argumentParts[argumentParts.length-1];
 
       this.remove();
     }
@@ -101,5 +134,25 @@ function googRequireHandler(callExpressionNode){
 function googInheritsHandler(est){
 
   est.remove();
+
+}
+
+
+function providedAvailability(node) {
+
+  if(node.type === 'ExpressionStatement' && node.expression.type === 'AssignmentExpression') {
+    let expr = node.expression.left;
+    if(expr.property.name === providedName) {
+      providedNameDefined = true;
+      this.break();
+    }
+  }else if(node.type === 'VariableDeclaration'){
+    for(let declaration of node.declarations) {
+      if(declaration.id.name === providedName) {
+        providedNameDefined = true;
+        this.break();
+      }
+    }
+  }
 
 }

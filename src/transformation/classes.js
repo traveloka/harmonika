@@ -29,18 +29,25 @@ export default
       enter: classReplacement
     });
 
-    if(superClass) {
+    if(containClass && superClass) {
+
       estraverse.replace(ast, {
         enter: callParentMethodDetector
       });
+
+    }else if(!containClass){
+
+
     }
+
+
 
     if(callback){
       callback();
     }
   }
 
-var functions = [], superClass = null;
+var functions = [], containClass = false, superClass = null;
 var options = {
   addExport : true
 };
@@ -66,6 +73,7 @@ function createClass(_function) {
     _function.node._class = createdClass;
 
     createdClass.body.addMethod(constructor, true);
+    containClass = true;
   }
 }
 
@@ -274,7 +282,7 @@ function classReplacement(node) {
     this.remove();
   } else if (node._replace) {
 
-    if(options.addExport) {
+    if(options.addExport && containClass) {
       let exportDeclaration = new ExportDeclaration();
       exportDeclaration.declaration = node._replace._class;
       return exportDeclaration;

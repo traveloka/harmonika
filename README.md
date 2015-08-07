@@ -48,10 +48,11 @@ $ node bin/index.js -s input_files/sample2.js
 - Create test file for each parsed file
 - `static` method
 - Base class method call using `super`
-
+- Improve let/const to understand object assignment
+- Singleton export
+ 
 ## To-do Features
 - [ ] Flow syntax
 - [ ] Static properties
-- [ ] Singleton export 
 - [ ] save typedef state
 - [ ] Improve namespace removal to only remove namespace defined on goog.require/provide

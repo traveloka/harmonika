@@ -27,5 +27,20 @@ function replaceVar(node) {
     if (declarations[left]) {
       declarations[left].kind = 'let';
     }
+    containName(node.left);
+  }
+}
+
+function containName(node){
+  let name = null;
+  if(node.type === 'MemberExpression'){
+    name = node.property.name;
+    containName(node.object);
+  }else if(node.type === 'Identifier'){
+    name = node.name;
+  }
+
+  if (name && declarations[name]) {
+    declarations[name].kind = 'let';
   }
 }
