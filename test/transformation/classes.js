@@ -27,6 +27,15 @@ describe('Class transformation', function () {
     expect(result).to.include('someMethod(a, b)');
   });
 
+  it('should call super', function () {
+    var script = "function someClass() {someClassBase.call(this);\n}\nsomeClass.prototype.someMethod = function(a, b) {someClassBase.someMethod(a, b);\n}";
+
+    var result = test(script);
+
+    expect(result).to.include('class someClass extends someClassBase');
+    expect(result).to.include('super.someMethod(a, b)');
+  });
+
   it('should convert functions without prototype as static to class', function () {
     var script = "function someClass() {\n}\nsomeClass.someMethod = function(a, b) {\n}";
 

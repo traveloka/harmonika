@@ -47,10 +47,11 @@ $ node bin/index.js -s input_files/sample2.js
 - Implicit import (import all undefined identifier)
 - Create test file for each parsed file
 - `static` method
+- Base class method call using `super`
 
 ## To-do Features
 - [ ] Flow syntax
 - [ ] Static properties
 - [ ] Singleton export 
-- [ ] Superclass method call
 - [ ] save typedef state
+- [ ] Improve namespace removal to only remove namespace defined on goog.require/provide

@@ -1,5 +1,7 @@
 goog.provide('tv.something.jq');
+
 tv.something.jq = function(sem){
+  jqBase.call(this, sem);
   var o = sem.cookie.getApi();
   var x = tv.cookie.getApi();
   var t = x.b;
@@ -10,6 +12,7 @@ tv.something.jq = function(sem){
 };
 
 tv.something.jq.prototype.b = function(){
+  jqBase.b();
   console.log('b');
 };
 

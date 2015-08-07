@@ -29,12 +29,18 @@ export default
       enter: classReplacement
     });
 
+    if(superClass) {
+      estraverse.replace(ast, {
+        enter: callParentMethodDetector
+      });
+    }
+
     if(callback){
       callback();
     }
   }
 
-var functions = [];
+var functions = [], superClass = null;
 var options = {
   addExport : true
 };
@@ -53,6 +59,7 @@ function createClass(_function) {
     let superClassName = detectInheritance(constructor.body);
     if(superClassName) {
       createdClass.superClass = superClassName;
+      superClass = superClassName;
     }
 
     _function.class = createdClass;
@@ -111,6 +118,17 @@ function hasCallIdentifier(node) {
 
   return hasCall;
 
+}
+
+function callParentMethodDetector(node){
+  if(node.type === 'ExpressionStatement' && node.expression.type === 'CallExpression') {
+    let callee = node.expression.callee;
+    if(callee.type === 'MemberExpression' && callee.object.type === 'Identifier' && callee.object.name === superClass.name) {
+      callee.object.name = 'super';
+      node.expression.callee = callee;
+      return node;
+    }
+  }
 }
 
 function functionDetector(node, parent) {
