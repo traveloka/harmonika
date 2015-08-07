@@ -47,10 +47,11 @@ $ node bin/index.js -s input_files/sample2.js
 - Implicit import (import all undefined identifier)
 - Create test file for each parsed file
 - `static` method
+- `static` properties
 - Base class method call using `super`
 - Improve let/const to understand object assignment
 - Singleton export
-- Static properties
+
  
 ## To-do Features
 - [ ] Flow syntax
