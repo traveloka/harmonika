@@ -1,5 +1,5 @@
-goog.provide('tv.jq');
-tv.jq = function(sem){
+goog.provide('tv.something.jq');
+tv.something.jq = function(sem){
   var o = sem.cookie.getApi();
   var x = tv.cookie.getApi();
   var t = x.b;
@@ -9,14 +9,14 @@ tv.jq = function(sem){
   console.log('a');
 };
 
-tv.jq.prototype.b = function(){
+tv.something.jq.prototype.b = function(){
   console.log('b');
 };
 
-tv.jq.prototype.c = function(){
+tv.something.jq.prototype.c = function(){
   console.log('c');
 };
 
-tv.jq.d = function() {
+tv.something.jq.d = function() {
   console.log('d');
 };

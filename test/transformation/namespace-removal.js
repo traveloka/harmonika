@@ -18,9 +18,15 @@ function test(script) {
 describe('Namespace removal', function () {
 
   it('should remove namespace from function definition if exist in namespacePrefix', function () {
-    var script = 'tv.d = function(x, y, x) {};';
+    var script = 'tv.c.d = function(x, y, x) {};';
 
     expect(test(script)).to.equal('var d = function (x, y, x) {\n};');
+  });
+
+  it('should not remove static function namespace', function () {
+    var script = 'tv.c.d = function(x, y, x) {};\ntv.c.d.e = function(x, y, x) {};';
+
+    expect(test(script)).to.equal('var d = function (x, y, x) {\n};\nd.e = function (x, y, x) {\n};');
   });
 
   it('should not remove namespace from function definition', function () {
@@ -58,6 +64,12 @@ describe('Namespace removal', function () {
     var script = 'this._getAPIUrl(this.API.PAX_VALIDATION);';
 
     expect(test(script)).to.equal('this._getAPIUrl(this.API.PAX_VALIDATION);');
+  });
+
+  it('should remove property namespace', function () {
+    var script = 'var a = tv.c()';
+
+    expect(test(script)).to.equal('var a = c();');
   });
 
 });

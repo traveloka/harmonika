@@ -12,8 +12,13 @@ export default
 function (ast, param, callback) {
 
   namespacePrefix = [];
+  identifiedObject = [];
   if(typeof param === 'object') {
     namespacePrefix = merge(namespacePrefix, param.namespacePrefix);
+  }
+
+  for(let itm of ast.body){
+    getIdentifiedObject(itm);
   }
 
   estraverse.replace(ast, {
@@ -29,7 +34,24 @@ function (ast, param, callback) {
   }
 }
 
-var namespacePrefix =[];
+var namespacePrefix =[], identifiedObject = [];
+
+function getIdentifiedObject(node) {
+  if(node.type === 'ExpressionStatement' && node.expression.type === 'AssignmentExpression') {
+    let expr = node.expression.left;
+    if(expr.type === 'MemberExpression') {
+      identifiedObject.push(node.expression.left.property.name);
+    }else if(expr.type === 'Identifier'){
+      identifiedObject.push(node.expression.left.name);
+    }
+
+  }else if(node.type === 'VariableDeclaration'){
+    for(let declaration of node.declarations) {
+      identifiedObject.push(declaration.id.name);
+    }
+  }
+}
+
 /**
  * Strip namespace if contain
  * @param node
@@ -80,24 +102,37 @@ function stripNamespace(node) {
  * @returns {*}
  */
 function variableDeclaratorHandler(node, parent) {
-  if(node.type === 'ExpressionStatement' && node.expression.type === 'AssignmentExpression' && node.expression.left.type === 'Identifier' && node.expression.right.type === 'FunctionExpression'){
+  if(node.type === 'ExpressionStatement' && node.expression.type === 'AssignmentExpression' && node.expression.right.type === 'FunctionExpression'){
 
     let leftNode = node.expression.left;
 
-    let className = new Identifier();
-    className.name = leftNode.name;
-
-    let variableDeclarator = new VariableDeclarator();
-    variableDeclarator.id = className;
-    variableDeclarator.init = node.expression.right;
-
-    let variableDeclaration = new VariableDeclaration();
-    variableDeclaration.addDeclaration(variableDeclarator);
-    if(parent.leadingComments) {
-      variableDeclaration.leadingComments = parent.leadingComments;
+    let leftMostName = null;
+    if(leftNode.type === 'MemberExpression') {
+      if(leftNode.object.type === 'Identifier' && identifiedObject.indexOf(leftNode.object.name) === -1){
+        leftMostName = leftNode.property.name;
+      }
+    }else if(leftNode.type === 'Identifier'){
+      leftMostName = leftNode.name;
     }
 
-    return variableDeclaration;
+    if(leftMostName) {
+      let className = new Identifier();
+      className.name = leftMostName;
+
+      let variableDeclarator = new VariableDeclarator();
+      variableDeclarator.id = className;
+      variableDeclarator.init = node.expression.right;
+
+      let variableDeclaration = new VariableDeclaration();
+      variableDeclaration.addDeclaration(variableDeclarator);
+      if(parent.leadingComments) {
+        variableDeclaration.leadingComments = parent.leadingComments;
+      }
+
+      return variableDeclaration;
+    }
+
+
   }
 
 }
