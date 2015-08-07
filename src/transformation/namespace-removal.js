@@ -7,17 +7,23 @@ import VariableDeclaration from './../syntax/variable-declaration.js';
 import VariableDeclarator from './../syntax/variable-declarator.js';
 import MemberExpression from './../syntax/member-expression.js';
 import NodeDetector from './../utils/node-detector.js';
+import merge from 'lodash/object/merge.js';
 
 export default
 
 function (ast, param, callback) {
 
-  if(typeof param === 'object' && param.namespace) {
-    namespaceList = param.namespace;
+  namespacePrefix = [];
+  if(typeof param === 'object') {
+    namespacePrefix = merge(namespacePrefix, param.namespacePrefix);
   }
 
   estraverse.replace(ast, {
-    enter: namespaceDetector
+    enter: stripNamespace
+  });
+
+  estraverse.replace(ast, {
+    enter: variableDeclaratorHandler
   });
 
   if(callback){
@@ -25,31 +31,46 @@ function (ast, param, callback) {
   }
 }
 
-var namespaceList = [];
+var namespacePrefix =[];
+/**
+ * Strip namespace if contain
+ * @param node
+ * @returns {*}
+ */
+function stripNamespace(node) {
 
-function namespaceDetector(node) {
+  if(node.type === 'MemberExpression'){
+    let containNamespace = false;
+    estraverse.traverse(node, {
+      enter: function(inNode) {
+        if(inNode.type === 'Identifier' && namespacePrefix.indexOf(inNode.name) !== -1) {
+          containNamespace = true;
+          this.break();
+        }
+      }
+    });
 
-  let newNode = null;
+    if(containNamespace) {
 
-  if(node.type === 'ExpressionStatement' && node.expression.type === 'AssignmentExpression' && !NodeDetector.leftNodeHasPrototype(node.expression)){
+      if(node.object.type === 'MemberExpression'){
+        if(node.object.property.name === 'prototype' && node.object.object.type === 'MemberExpression'){
+          node.object.object = node.object.object.property;
+        }else{
+          node.object = node.object.property;
+        }
+      }else{
+        let idn = new Identifier();
+        idn.name = node.property.name;
+        node = idn;
+      }
 
-    newNode = constructorHandler(node.expression, node);
+      return node;
 
-  }else if (node.type === 'AssignmentExpression' && NodeDetector.leftNodeHasPrototype(node)) {
-
-    newNode = prototypeHandler(node);
-
-  }else if ( node.type === 'MemberExpression' && node.object.type === 'MemberExpression' && node.object.property.name !== 'prototype' && !NodeDetector.calledByThis(node)) {
-
-    newNode = identifierChainHandler(node);
-
-  }
-
-  if(newNode) {
-    return newNode;
+    }
   }
 
 }
+
 
 /**
  * Convert
@@ -60,17 +81,17 @@ function namespaceDetector(node) {
  * @param parent
  * @returns {*}
  */
-function constructorHandler(node, parent) {
-  if(node.right.type === 'FunctionExpression'){
+function variableDeclaratorHandler(node, parent) {
+  if(node.type === 'ExpressionStatement' && node.expression.type === 'AssignmentExpression' && node.expression.left.type === 'Identifier' && node.expression.right.type === 'FunctionExpression'){
 
-    let leftNode = node.left;
+    let leftNode = node.expression.left;
 
-    let functionName = new Identifier();
-    functionName.name = leftNode.property.name;
+    let className = new Identifier();
+    className.name = leftNode.name;
 
     let variableDeclarator = new VariableDeclarator();
-    variableDeclarator.id = functionName;
-    variableDeclarator.init = node.right;
+    variableDeclarator.id = className;
+    variableDeclarator.init = node.expression.right;
 
     let variableDeclaration = new VariableDeclaration();
     variableDeclaration.addDeclaration(variableDeclarator);
@@ -81,63 +102,5 @@ function constructorHandler(node, parent) {
     return variableDeclaration;
   }
 
-  return false;
 }
 
-/**
- * Convert
- *    a.b.c.prototype.d = function() {}
- * to
- *    c.prototype.d = function() {}
- * @param node
- * @returns {*}
- */
-function prototypeHandler(node) {
-
-  if(node.right.type === 'FunctionExpression'){
-
-      let leftNode = node.left;
-
-      let functionName = new Identifier();
-      functionName.name = leftNode.property.name;
-
-      let className = new Identifier();
-      className.name = leftNode.object.object.name || leftNode.object.object.property.name;
-
-      let prototypeIdentifier = new Identifier();
-      prototypeIdentifier.name = 'prototype';
-
-      let prototypeNode = new MemberExpression();
-      prototypeNode.object = className;
-      prototypeNode.property = prototypeIdentifier;
-
-      let functionNode = new MemberExpression();
-      functionNode.object = prototypeNode;
-      functionNode.property = functionName;
-
-      node.left = functionNode;
-      return node;
-
-  }
-
-  return false;
-
-}
-
-/**
- * Convert
- *    a.b.c.call();
- *    x = a.b.c;
- * to
- *    c.call();
- *    x = b.c;
- * @param node
- * @returns {*}
- */
-function identifierChainHandler(node){
-
-  node.object = node.object.property;
-
-  return node;
-
-}

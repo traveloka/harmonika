@@ -8,6 +8,7 @@ import path from 'path';
 
 export default
 function (ast, param, callback) {
+
   estraverse.replace(ast, {
     enter: googProvideDetector
   });
@@ -82,7 +83,7 @@ function googRequireHandler(callExpressionNode){
     // Get the relative path ../../
     let relativePath = path.relative(myPath, requirePath);
 
-    // Start creating new object to format -> import ... form ...
+    // Start creating new object to format -> import `requireFileName` from `relativePath`
     let specifier = new ImportDefaultSpecifier();
     specifier.setIdentifierName(requireFileName);
 

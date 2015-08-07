@@ -77,17 +77,8 @@ function identifierDetector(node) {
       identifiedIdentifier.push(node.left.name);
     }else if(node.left.type === 'MemberExpression') { // Only allowed until 2 level dot chain
 
-      if(node.left.object.type === 'Identifier') { // 1 level (a = x;)
-        identifiedIdentifier.push(node.left.object.name);
-      }else if(node.left.object.type === 'MemberExpression'){ //2 level (a.b = x;)
-        if(node.left.object.property.name === 'prototype') { // if prototype a.b.prototype.c, skip to b.prototype.c
-          if(node.left.object.object.type === 'MemberExpression'){
-            identifiedIdentifier.push(node.left.object.object.property.name);
-          }
-        }else {
-          identifiedIdentifier.push(node.left.object.property.name);
-        }
-      }
+      var mostLeft = NodeDetector.getCalleeObject(node.left);
+      identifiedIdentifier.push(mostLeft);
 
     }
 

@@ -18,6 +18,12 @@ describe('Namespace removal', function () {
     expect(test(script)).to.equal('var d = function (x, y, x) {\n};');
   });
 
+  it('should not remove namespace from function definition', function () {
+    var script = 'var c = function() {};\na.b.c.d = function(x, y, x) {};';
+
+    expect(test(script)).to.equal('var c = function() {};\nc.d = function (x, y, x) {\n};');
+  });
+
 
   it('shouldn\'t change right function definition', function () {
     var script = 'var d = function (x, y, x) {\n};';

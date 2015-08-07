@@ -60,8 +60,29 @@ function getCalleeObject(callee) {
 
 }
 
+function getNodeObject(node, identifiers) {
+
+  if(node.object.type === 'MemberExpression' && identifiers.indexOf(node.object.property.name) !== -1 ) {
+    node.object = node.object.property;
+  }else if(node.object.type === 'MemberExpression'){
+   getNodeObject(node.object, identifiers);
+  }
+
+}
+
+function getStripedIdentifier(node, identifiers) {
+
+  if(node.type === 'MemberExpression' && node.object.type === 'MemberExpression' && node.object.property.name !== 'prototype' && !calledByThis(node)) {
+    getNodeObject(node, identifiers);
+    return node;
+  }
+
+  return false;
+}
+
 export default {
   leftNodeHasPrototype : leftNodeHasPrototype,
   calledByThis : calledByThis,
-  getCalleeObject : getCalleeObject
+  getCalleeObject : getCalleeObject,
+  getStripedIdentifier : getStripedIdentifier
 };
