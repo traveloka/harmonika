@@ -121,11 +121,11 @@ function hasCallIdentifier(node) {
 }
 
 function callParentMethodDetector(node){
-  if(node.type === 'ExpressionStatement' && node.expression.type === 'CallExpression') {
-    let callee = node.expression.callee;
+  if(node.type === 'CallExpression') {
+    let callee = node.callee;
     if(callee.type === 'MemberExpression' && callee.object.type === 'Identifier' && callee.object.name === superClass.name) {
       callee.object.name = 'super';
-      node.expression.callee = callee;
+      node.callee = callee;
       return node;
     }
   }

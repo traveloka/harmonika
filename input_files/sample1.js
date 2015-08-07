@@ -12,7 +12,7 @@ tv.something.jq = function(sem){
 };
 
 tv.something.jq.prototype.b = function(){
-  jqBase.b();
+  jqBase.b().a;
   console.log('b');
 };
 
