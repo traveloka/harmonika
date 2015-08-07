@@ -23,3 +23,10 @@ tv.something.jq.prototype.c = function(){
 tv.something.jq.d = function() {
   console.log('d');
 };
+
+tv.something.jq.G_APA = 'apa';
+tv.something.jq.G_NUMBER = 0;
+tv.something.jq.G_OBJECT = {
+  satu : 'satu'
+};
+tv.something.jq.G_KALI = 2*2;

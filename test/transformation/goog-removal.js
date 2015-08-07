@@ -42,14 +42,14 @@ describe('Goog removal', function () {
   it('should remove goog.provide', function () {
     var script = 'goog.provide("a.b")';
 
-    expect(test(script)).to.be.empty;
+    expect(test(script)).to.be.equal('\nexport default\nb;');
   });
 
   it('should change goog.require to import', function () {
     var script = 'goog.provide("a.b.c.d"); goog.require("a.b.e.f");';
 
     expect(testFileName(script)).to.be.equal('a/b/c/d.js');
-    expect(test(script)).to.be.equal('import f from \'../e/f.js\';');
+    expect(test(script)).to.be.equal('import f from \'../e/f.js\';\n\nexport default\nd;');
   });
 
 });

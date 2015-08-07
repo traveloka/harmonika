@@ -79,9 +79,7 @@ function stripNamespace(node) {
           node.object = node.object.property;
         }
       }else{
-        let idn = new Identifier();
-        idn.name = node.property.name;
-        node = idn;
+        node = new Identifier(node.property.name);
       }
 
       return node;
@@ -116,11 +114,9 @@ function variableDeclaratorHandler(node, parent) {
     }
 
     if(leftMostName) {
-      let className = new Identifier();
-      className.name = leftMostName;
 
       let variableDeclarator = new VariableDeclarator();
-      variableDeclarator.id = className;
+      variableDeclarator.id = new Identifier(leftMostName);
       variableDeclarator.init = node.expression.right;
 
       let variableDeclaration = new VariableDeclaration();

@@ -26,9 +26,8 @@ function (ast, param, callback) {
     enter: providedAvailability
   });
 
-  if(!providedNameDefined){
-    let className = new Identifier();
-    className.name = providedName;
+  if(!providedNameDefined && providedName){
+    let className = new Identifier(providedName);
 
     let variableDeclarator = new VariableDeclarator();
     variableDeclarator.id = className;
@@ -54,7 +53,7 @@ function (ast, param, callback) {
   }
 }
 
-var fileName = null, providedName = null, providedNameDefined = false;;
+var fileName = null, providedName = null, providedNameDefined = false;
 
 function googProvideDetector(node){
 

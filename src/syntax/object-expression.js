@@ -13,7 +13,7 @@ class ObjectExpression extends BaseSyntax {
    *
    * @constructor
    */
-  constructor(callee, args) {
+  constructor() {
     super('ObjectExpression');
     this.properties = [];
   }

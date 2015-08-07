@@ -50,9 +50,9 @@ $ node bin/index.js -s input_files/sample2.js
 - Base class method call using `super`
 - Improve let/const to understand object assignment
 - Singleton export
+- Static properties
  
 ## To-do Features
 - [ ] Flow syntax
-- [ ] Static properties
 - [ ] save typedef state
 - [ ] Improve namespace removal to only remove namespace defined on goog.require/provide

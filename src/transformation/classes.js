@@ -7,6 +7,8 @@ import MemberExpression from './../syntax/member-expression.js';
 import CallExpression from './../syntax/call-expression.js';
 import ReturnStatement from './../syntax/return-statement.js';
 import ExportDeclaration from './../syntax/export-declaration.js';
+import VariableDeclaration from './../syntax/variable-declaration.js';
+import VariableDeclarator from './../syntax/variable-declarator.js';
 import merge from 'lodash/object/merge.js';
 import union from 'lodash/array/union.js';
 
@@ -35,11 +37,13 @@ export default
         enter: callParentMethodDetector
       });
 
-    }else if(!containClass){
-
-
     }
 
+    if(externalData.length > 0){
+      for(let data of externalData){
+        ast.body.push(data);
+      }
+    }
 
 
     if(callback){
@@ -47,7 +51,7 @@ export default
     }
   }
 
-var functions = [], containClass = false, superClass = null;
+var functions = [], containClass = false, superClass = null, externalData = [];
 var options = {
   addExport : true
 };
@@ -86,20 +90,15 @@ function detectInheritance(_constructorBody) {
 
       if(node.type === 'CallExpression' && hasCallIdentifier(node.callee)) {
 
-        let callee = new Identifier();
-        callee.name = 'super';
-
         let callArguments = node.arguments;
         callArguments.shift();
 
         let callSuper = new CallExpression();
-        callSuper.callee = callee;
+        callSuper.callee = new Identifier('super');
         callSuper.arguments = callArguments;
 
         // Search super class name
-        superClassName = new Identifier();
-        superClassName.name = node.callee.object.name;
-
+        superClassName = new Identifier(node.callee.object.name);
 
         return callSuper;
 
@@ -210,7 +209,21 @@ function classMaker(node, parent) {
                 )
               );
 
-          } else {
+          } else if(method.type !== 'FunctionExpression'){
+            let localIdentifier = new Identifier('_'+node.left.property.name);
+            createdMethod.kind = 'get';
+            createdMethod.body = new ReturnStatement(localIdentifier);
+
+
+            let variableDeclarator = new VariableDeclarator();
+            variableDeclarator.id = localIdentifier;
+            variableDeclarator.init = node.right;
+
+            let variableDeclaration = new VariableDeclaration();
+            variableDeclaration.addDeclaration(variableDeclarator);
+            externalData.push(variableDeclaration);
+
+          }else {
             createdMethod.body = method.body;
             createdMethod.params = method.params;
           }
