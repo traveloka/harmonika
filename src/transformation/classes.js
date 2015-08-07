@@ -134,13 +134,31 @@ function functionDetector(node, parent) {
 
 }
 
+function classDefined(identifierName) {
+  if(identifierName.type === 'Identifier') {
+    for (let _function of functions) {
+      if (_function.id.name === identifierName.name) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function classMaker(node, parent) {
 
   if (node.type === 'AssignmentExpression') {
 
-    if (node.left.object && node.left.object.property && node.left.object.property.name === 'prototype') {
+    let staticMethodCandidate = node.left.object && classDefined(node.left.object);
+    if (node.left.object && ((node.left.object.property && node.left.object.property.name === 'prototype') || staticMethodCandidate)) {
 
-      let functionName = node.left.object.object.name;
+      let functionName = null;
+      if(staticMethodCandidate) {
+        functionName = node.left.object.name;
+      }else {
+        functionName = node.left.object.object.name;
+      }
 
       for (let _function of functions) {
 
@@ -172,6 +190,9 @@ function classMaker(node, parent) {
           }
 
           createdMethod.name = node.left.property.name;
+          if(staticMethodCandidate) {
+            createdMethod.static = true;
+          }
 
           _function.class.body.addMethod(createdMethod);
 

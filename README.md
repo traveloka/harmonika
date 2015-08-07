@@ -45,11 +45,11 @@ $ node bin/index.js -s input_files/sample2.js
 - `import` support
 - `export` support
 - Implicit import (import all undefined identifier)
+- Create test file for each parsed file
+- `static` method
 
 ## To-do Features
-- [ ] Create test file for each parsed file
 - [ ] Flow syntax
-- [ ] Static method
 - [ ] Static properties
 - [ ] Singleton export 
 - [ ] Superclass method call

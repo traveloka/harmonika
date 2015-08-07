@@ -27,6 +27,15 @@ describe('Class transformation', function () {
     expect(result).to.include('someMethod(a, b)');
   });
 
+  it('should convert functions without prototype as static to class', function () {
+    var script = "function someClass() {\n}\nsomeClass.someMethod = function(a, b) {\n}";
+
+    var result = test(script);
+
+    expect(result).to.include('class someClass');
+    expect(result).to.include('static someMethod(a, b)');
+  });
+
   it('should apply non-anonymous functions to methods', function () {
     var script = "function someClass() {\n}\nsomeClass.prototype.someMethod = someMethod\nfunction someMethod(a, b) {\n}";
 
