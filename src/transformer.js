@@ -64,11 +64,11 @@ class Transformer {
     doTransform('namespaceRemoval', namespaceRemovalTransformation, {namespacePrefix : this.options.namespacePrefix});
     doTransform('implicitImporter', implicitImporterTransformation);
     doTransform('classes', classTransformation, { addExport: this.options.addExport });
-    //doTransform('stringTemplates', templateStringTransformation);
-    //doTransform('arrowFunctions', arrowFunctionTransformation);
-    //doTransform('let', letTransformation);
-    //doTransform('defaultArguments', defaultArgsTransformation);
-    //doTransform('objectMethods', objectMethodsTransformation);
+    doTransform('stringTemplates', templateStringTransformation);
+    doTransform('arrowFunctions', arrowFunctionTransformation);
+    doTransform('let', letTransformation);
+    doTransform('defaultArguments', defaultArgsTransformation);
+    doTransform('objectMethods', objectMethodsTransformation);
 
   }
 

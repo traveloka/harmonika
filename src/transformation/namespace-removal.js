@@ -5,8 +5,6 @@ import estraverse from 'estraverse';
 import Identifier from './../syntax/identifier.js';
 import VariableDeclaration from './../syntax/variable-declaration.js';
 import VariableDeclarator from './../syntax/variable-declarator.js';
-import MemberExpression from './../syntax/member-expression.js';
-import NodeDetector from './../utils/node-detector.js';
 import merge from 'lodash/object/merge.js';
 
 export default
