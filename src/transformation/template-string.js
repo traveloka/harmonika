@@ -6,6 +6,9 @@ import _ from 'lodash';
 
 export default
   function (ast, param, callback) {
+
+    reset();
+
     estraverse.replace(ast, {
       enter: traverser
     });
@@ -16,6 +19,13 @@ export default
   }
 
 let operands, hasString, hasExpression, currentExpression;
+
+function reset(){
+  operands = [];
+  hasString = null;
+  hasExpression = null;
+  currentExpression = null;
+}
 
 function traverser(node) {
   if (node.type === 'BinaryExpression' && node.operator === '+') {

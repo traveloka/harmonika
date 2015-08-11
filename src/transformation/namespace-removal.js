@@ -11,8 +11,8 @@ export default
 
 function (ast, param, callback) {
 
-  namespacePrefix = [];
-  identifiedObject = [];
+  reset();
+
   if(typeof param === 'object') {
     namespacePrefix = merge(namespacePrefix, param.namespacePrefix);
   }
@@ -35,6 +35,11 @@ function (ast, param, callback) {
 }
 
 var namespacePrefix =[], identifiedObject = [];
+
+function reset(){
+  namespacePrefix = [];
+  identifiedObject = [];
+}
 
 function getIdentifiedObject(node) {
   if(node.type === 'ExpressionStatement' && node.expression.type === 'AssignmentExpression') {

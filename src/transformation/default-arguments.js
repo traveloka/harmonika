@@ -3,6 +3,9 @@ import estraverse from 'estraverse';
 
 export default
   function (ast, param, callback) {
+
+    reset();
+
     estraverse.replace(ast, {
       enter: findDefaultAssignments
     });
@@ -16,6 +19,10 @@ export default
   }
 
 let lastFunction = {};
+
+function reset(){
+  lastFunction = {};
+}
 
 function findDefaultAssignments(node) {
   if (node.type === 'FunctionDeclaration' ||

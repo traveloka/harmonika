@@ -2,6 +2,9 @@ import estraverse from 'estraverse';
 
 export default
   function (ast, param, callback) {
+
+    reset();
+
     estraverse.traverse(ast, {
       enter: replaceVar
     });
@@ -11,7 +14,11 @@ export default
     }
   }
 
-let declarations = {};
+var declarations = {};
+
+function reset(){
+  declarations = {};
+}
 
 function replaceVar(node) {
   if (node.type === 'VariableDeclaration') {

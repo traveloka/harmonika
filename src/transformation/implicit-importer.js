@@ -7,7 +7,7 @@ import NodeDetector from './../utils/node-detector.js';
 export default
   function (ast, callback) {
 
-    unidentifiedIdentifier = [];
+    reset();
 
     estraverse.traverse(ast, {
       enter: importDetector
@@ -25,10 +25,16 @@ export default
   }
 
 var unidentifiedIdentifier = [],
-  identifiedIdentifier = ['Object', 'console', 'JSON', 'window'],
+  identifiedIdentifier = [],
+  defaultImportSource = {};
+
+function reset(){
+  unidentifiedIdentifier = [];
+  identifiedIdentifier = ['Object', 'console', 'JSON', 'window'];
   defaultImportSource = {
     '$' : 'jquery'
   };
+}
 
 function importDetector(node) {
 

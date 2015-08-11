@@ -13,7 +13,7 @@ import FunctionExpression from './../syntax/function-expression.js';
 export default
   function (ast, specAst, mainFileLocation) {
 
-    functions = [];
+    reset();
 
     estraverse.traverse(ast, {
       enter: functionDetector
@@ -28,6 +28,11 @@ export default
   }
 
 var functions = [], className = null;
+
+function reset(){
+  functions = [];
+  className = null;
+}
 
 function importClass(ast, mainFileLocation) {
 

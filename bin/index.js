@@ -52,7 +52,7 @@ if (!files.length) {
 
 
 if (!outFolder || outFolder === true)
-  outFolder = 'output';
+  outFolder = '../output_files';
 
 var outFolderName = path.join(path.dirname(files[0]), outFolder);
 if(!fs.existsSync(outFolderName)){

@@ -14,6 +14,8 @@ import path from 'path';
 export default
 function (ast, param, callback) {
 
+  reset();
+
   estraverse.replace(ast, {
     enter: googProvideDetector
   });
@@ -54,6 +56,12 @@ function (ast, param, callback) {
 }
 
 var fileName = null, providedName = null, providedNameDefined = false;
+
+function reset(){
+  fileName = null;
+  providedName = null;
+  providedNameDefined = false;
+}
 
 function googProvideDetector(node){
 

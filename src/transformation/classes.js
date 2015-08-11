@@ -15,6 +15,8 @@ import union from 'lodash/array/union.js';
 export default
   function (ast, param, callback) {
 
+    reset();
+
     if(typeof param === 'object') {
       options = merge(options, param);
     }
@@ -51,10 +53,24 @@ export default
     }
   }
 
-var functions = [], containClass = false, superClass = null, externalData = [];
-var options = {
-  addExport : true
-};
+var
+  functions = [],
+  containClass = false,
+  superClass = null,
+  externalData = [],
+  options = {
+    addExport : true
+  };
+
+function reset(){
+  functions = [];
+  containClass = false;
+  superClass = null;
+  externalData = [];
+  options = {
+    addExport : true
+  };
+}
 
 function createClass(_function) {
   if (typeof _function.class === 'undefined') {
