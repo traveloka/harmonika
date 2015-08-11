@@ -32,8 +32,9 @@ describe('Export transformation', function () {
     var script = "var b = true;\nvar a = true;";
 
     var result = test(script);
-    expect(result).to.include('export default\nvar b = true;');
+    expect(result).to.not.include('export default\nvar b = true;');
     expect(result).to.include('export var a = true;');
+    expect(result).to.include('export default\nb;');
   });
 
   it('should export fileName as default', function () {
@@ -41,7 +42,7 @@ describe('Export transformation', function () {
 
     var result = test(script);
     expect(result).to.include('export var b = true;');
-    expect(result).to.include('export default\nvar fileName = true;');
+    expect(result).to.include('export default\nfileName;');
   });
 
   it('should not export var if there is class', function () {

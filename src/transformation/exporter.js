@@ -13,7 +13,7 @@ export default
     }
 
     for(let i=0; i<ast.body.length; i++){
-      ast.body[i].matchExportName = findClassAndGlobalVariable(ast.body[i]);
+      ast.body[i] = findClassAndGlobalVariable(ast.body[i]);
     }
 
     for(let i=0; i<ast.body.length; i++){
@@ -23,18 +23,26 @@ export default
       }
     }
 
+    if(lastExportItem){
+      let exportDeclaration = new ExportDeclaration();
+      exportDeclaration.default = true;
+      exportDeclaration.declaration = lastExportItem;
+      ast.body.push(exportDeclaration);
+    }
+
     if(callback){
       callback();
     }
   }
 
-var definedExportName = null, defaultExported = false, nodeTypeCounter = {}, definedExportNameMatch = null;
+var definedExportName = null, defaultExported = false, nodeTypeCounter = {}, definedExportNameMatch = null, lastExportItem = null;
 
 function reset(){
   definedExportName = null;
   defaultExported = false;
   nodeTypeCounter = {};
   definedExportNameMatch = null;
+  lastExportItem = null;
 }
 
 function checkMatchFileName(name){
@@ -50,9 +58,11 @@ function findClassAndGlobalVariable(node){
 
   if(node.type === 'VariableDeclaration') {
 
-    for(let vars of node.declarations){
+    for(let i=0; i<node.declarations.length; i++){
+
+      node.declarations[i].matchExportName = checkMatchFileName(node.declarations[i].id.name);
       if(!match){
-        match = checkMatchFileName(vars.id.name);
+        match = node.declarations[i].matchExportName;
       }
     }
 
@@ -62,12 +72,14 @@ function findClassAndGlobalVariable(node){
     match = checkMatchFileName(node.id.name);
   }
 
+  node.matchExportName = match;
+
   if(!nodeTypeCounter[node.type]) {
     nodeTypeCounter[node.type] = 0;
   }
   nodeTypeCounter[node.type]++;
 
-  return match;
+  return node;
 }
 
 function replaceClassAndGlobalVariable(node){
@@ -81,16 +93,33 @@ function replaceClassAndGlobalVariable(node){
     let exportDeclaration = new ExportDeclaration();
 
     if(!defaultExported && definedExportNameMatch && node.matchExportName){ // If matchExportName true, then whatever it's, it should be default
-      exportDeclaration.default = true;
+
       defaultExported = true;
+      exportDeclaration.default = true;
+
+      if(node.type === 'VariableDeclaration'){
+        for(let i=0; i<node.declarations.length; i++){
+          if(node.declarations[i].matchExportName){
+            lastExportItem = node.declarations[i].id;
+            return false;
+          }
+        }
+      }
+
     }else if(!defaultExported && !definedExportNameMatch){
 
       if(
         (node.type === 'VariableDeclaration' && (nodeTypeCounter.ClassDeclaration <= 0 || nodeTypeCounter.ClassDeclaration === undefined)) || // Default export first var/let/const if no class found
         (node.type === 'ClassDeclaration') // Default export first class
       ){
+
         exportDeclaration.default = true;
         defaultExported = true;
+
+        if(node.type === 'VariableDeclaration'){
+          lastExportItem = node.declarations[0].id;
+          return false;
+        }
       }
 
     }
