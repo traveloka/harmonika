@@ -24,7 +24,7 @@ describe('Export transformation', function () {
     var script = "var a = true;";
 
     var result = test(script);
-    expect(result).to.include('export default');
+    expect(result).to.include('export default\na;');
     expect(result).to.include('var a = true;');
   });
 
