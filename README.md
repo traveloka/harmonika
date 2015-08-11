@@ -1,5 +1,7 @@
 # Harmonika
 
+![Harmonika](https://dl.dropboxusercontent.com/u/9834816/harmonika.png)
+
 **Harmonika** parse your Closure code to ES6. Extended from existing project [xto6](https://github.com/mohebifar/xto6), with additional on-going features to support Closure.
 
 ## Usage
