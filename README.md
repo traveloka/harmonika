@@ -1,6 +1,6 @@
-# ES5toES6
+# Harmonika
 
-**ES5toES6** parse your ES5 code to ES6. Based on existing project with the same purpose [xto6](https://github.com/mohebifar/xto6) with additional on-going features.
+**Harmonika** parse your Closure code to ES6. Based on existing project with the same purpose [xto6](https://github.com/mohebifar/xto6) with additional on-going features to support Closure.
 
 ## Usage
 Clone this project
