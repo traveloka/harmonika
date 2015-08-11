@@ -5,7 +5,7 @@ import _ from 'lodash';
 import NodeDetector from './../utils/node-detector.js';
 
 export default
-  function (ast, callback) {
+  function (ast, param, callback) {
 
     reset();
 
@@ -65,6 +65,15 @@ function identifierDetector(node) {
   }else if( node.type === 'FunctionExpression' ) {
 
     let params = node.params;
+    for(let idn of params) {
+      if(idn.type === 'Identifier') {
+        identifiedIdentifier.push(idn.name);
+      }
+    }
+
+  }else if ( node.type === 'MethodDefinition' ){
+
+    let params = node.value.params;
     for(let idn of params) {
       if(idn.type === 'Identifier') {
         identifiedIdentifier.push(idn.name);

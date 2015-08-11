@@ -66,4 +66,16 @@ describe('Class transformation', function () {
     expect(result).to.include('set someAccessor(value)');
   });
 
+
+  it('should include static member', function () {
+    var script = "function someClass() {\n}\nsomeClass.someMethod = function(a, b) {\n}\nsomeClass.PI = 3;";
+
+    var result = test(script);
+
+    expect(result).to.include('class someClass');
+    expect(result).to.include('static someMethod(a, b)');
+    expect(result).to.include('static get PI()');
+    expect(result).to.include('var _PI = 3');
+  });
+
 });

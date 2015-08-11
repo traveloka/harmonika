@@ -11,9 +11,10 @@ import ExpressionStatement from './../syntax/expression-statement.js';
 import FunctionExpression from './../syntax/function-expression.js';
 
 export default
-  function (ast, specAst, mainFileLocation) {
+  function (ast, param, mainFileLocation) {
 
     reset();
+    let specAst = param.specAst;
 
     estraverse.traverse(ast, {
       enter: functionDetector

@@ -3,11 +3,13 @@ import merge from 'lodash/object/merge.js';
 import codeGenerator from './utils/escodegen.js';
 import formatter from 'esformatter';
 import astGenerator from './utils/ast-generator.js';
+import path from 'path';
 
 // Transformers
 import namespaceRemovalTransformation from './transformation/namespace-removal.js';
 import gooRemovalTransformation from './transformation/goog-removal.js';
 import classTransformation from './transformation/classes.js';
+import exporterTransformation from './transformation/exporter.js';
 import templateStringTransformation from './transformation/template-string.js';
 import arrowFunctionTransformation from './transformation/arrow-functions.js';
 import letTransformation from './transformation/let.js';
@@ -59,17 +61,20 @@ class Transformer {
     };
 
     doTransform('googRemoval', gooRemovalTransformation, {}, function(fileName){
-      self.fileName = fileName;
+      if(fileName) {
+        self.fileName = fileName;
+      }
     });
+
     doTransform('namespaceRemoval', namespaceRemovalTransformation, {namespacePrefix : this.options.namespacePrefix});
     doTransform('implicitImporter', implicitImporterTransformation);
-    doTransform('classes', classTransformation, { addExport: this.options.addExport });
+    doTransform('classes', classTransformation);
     doTransform('stringTemplates', templateStringTransformation);
     doTransform('arrowFunctions', arrowFunctionTransformation);
     doTransform('let', letTransformation);
     doTransform('defaultArguments', defaultArgsTransformation);
     doTransform('objectMethods', objectMethodsTransformation);
-
+    doTransform('generateExport', exporterTransformation);
   }
 
   /**
@@ -79,10 +84,10 @@ class Transformer {
    */
   readFile(filename) {
 
-    this.ast = astGenerator.readFile(filename, {
-      sync: true,
-      ecmaVersion: 6
-    });
+    let filenameParts = filename.split(path.sep);
+    this.fileName = filenameParts[filenameParts.length-1];
+
+    this.ast = astGenerator.readFile(filename, this.options);
 
   }
 
@@ -107,7 +112,11 @@ class Transformer {
     if(typeof transformation === 'object'){
       let func = transformation.func;
       let callback = transformation.callback;
-      let param = transformation.param;
+      let param = {filename: this.fileName};
+      if(transformation.param){
+        param = merge(param, transformation.param);
+      }
+
       func(this.ast, param, callback);
     }else{
       transformation(this.ast);
@@ -191,7 +200,7 @@ class Transformer {
       ecmaVersion: 6
     });
 
-    generateTest(this.ast, this.astTest, '../'+ this.options.sourceDir + '/' +this.fileName);
+    generateTest(this.ast, {specAst: this.astTest}, '../'+ this.options.sourceDir + '/' +this.fileName);
 
     const code = this.outTest();
 
@@ -221,9 +230,9 @@ Transformer.defaultOptions = {
     namespaceRemoval : true,
     googRemoval : true,
     implicitImporter: true,
-    generateTest : false
+    generateTest : false,
+    generateExport : true
   },
-  addExport : true,
   namespacePrefix : [],
   testTemplate : './src/tpl/spec.js',
   formatter: false,
@@ -236,5 +245,7 @@ Transformer.defaultOptions = {
     comment: true
   },
   sourceDir : 'src',
-  testDir : 'test'
+  testDir : 'test',
+  sync: true,
+  ecmaVersion: 6
 };

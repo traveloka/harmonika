@@ -8,7 +8,6 @@ import Identifier from './../syntax/identifier.js';
 import VariableDeclaration from './../syntax/variable-declaration.js';
 import VariableDeclarator from './../syntax/variable-declarator.js';
 import ObjectExpression from './../syntax/object-expression.js';
-import ExportDeclaration from './../syntax/export-declaration.js';
 import path from 'path';
 
 export default
@@ -45,9 +44,6 @@ function (ast, param, callback) {
       }
     }
 
-    let exportDeclaration = new ExportDeclaration();
-    exportDeclaration.declaration = className;
-    ast.body.push(exportDeclaration);
   }
 
   if(callback){

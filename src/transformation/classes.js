@@ -1,3 +1,7 @@
+/**
+ * Convert any function with prototype to class with method
+ */
+
 import estraverse from 'estraverse';
 import MethodDefinition from './../syntax/method-definition.js';
 import ClassDeclaration from './../syntax/class-declaration.js';
@@ -6,20 +10,14 @@ import ThisExpression from './../syntax/this-expression.js';
 import MemberExpression from './../syntax/member-expression.js';
 import CallExpression from './../syntax/call-expression.js';
 import ReturnStatement from './../syntax/return-statement.js';
-import ExportDeclaration from './../syntax/export-declaration.js';
 import VariableDeclaration from './../syntax/variable-declaration.js';
 import VariableDeclarator from './../syntax/variable-declarator.js';
-import merge from 'lodash/object/merge.js';
 import union from 'lodash/array/union.js';
 
 export default
   function (ast, param, callback) {
 
     reset();
-
-    if(typeof param === 'object') {
-      options = merge(options, param);
-    }
 
     estraverse.traverse(ast, {
       enter: functionDetector
@@ -57,19 +55,13 @@ var
   functions = [],
   containClass = false,
   superClass = null,
-  externalData = [],
-  options = {
-    addExport : true
-  };
+  externalData = [];
 
 function reset(){
   functions = [];
   containClass = false;
   superClass = null;
   externalData = [];
-  options = {
-    addExport : true
-  };
 }
 
 function createClass(_function) {
@@ -310,13 +302,6 @@ function classReplacement(node) {
   } else if (node._remove) {
     this.remove();
   } else if (node._replace) {
-
-    if(options.addExport && containClass) {
-      let exportDeclaration = new ExportDeclaration();
-      exportDeclaration.declaration = node._replace._class;
-      return exportDeclaration;
-    }
-
     return node._replace._class;
   }
 }

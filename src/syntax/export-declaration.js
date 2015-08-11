@@ -20,7 +20,7 @@ class ExportDeclaration extends BaseSyntax {
     super('ExportDeclaration');
 
     this.declaration = null;
-    this.default = true;
+    this.default = false;
     this.specifiers = null;
     this.source = null;
 
