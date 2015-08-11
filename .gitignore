@@ -2,5 +2,5 @@
 *.log
 node_modules
 lib
-ES5toES5.iml
+Harmonika.iml
 input_files/output
