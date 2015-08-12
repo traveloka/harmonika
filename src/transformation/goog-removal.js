@@ -1,6 +1,15 @@
 /**
  * Created by semmatabei on 7/30/15.
  */
+/**
+ * Capabilities :
+ * 1. Detect goog.provide to determine filename and main object/class name
+ * 2. Detect goog.require & inherits :
+ * 2.a on goog.require : generate relative path and convert to es6 module import style
+ * 2.b on goog.inherits : remove the expression since it's not much use
+ * 3. providedAvailability : Check whether the provided name had been declared
+ * 3.a If it's never declared : add new variable declaration after import statement
+ */
 import estraverse from 'estraverse';
 import ImportDefaultSpecifier from './../syntax/import-default-specifier.js';
 import ImportDeclaration from './../syntax/import-declaration.js';
@@ -78,7 +87,7 @@ function googProvideDetector(node){
   }
 
 }
-
+// This is separated from googProvideDetector to ensure provide will always detected first because following functionality depends on provided name
 function googDetector(node) {
 
   if(node.type === 'ExpressionStatement' && node.expression.type === 'CallExpression' && node.expression.callee.type === 'MemberExpression'){

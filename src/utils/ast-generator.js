@@ -45,6 +45,7 @@ export function read(js, options) {
   options.ranges = true;
   options.onComment = comments;
   options.onToken = tokens;
+  options.sourceType = 'module';
 
   if (options.coffee) {
     js = coffee.compile(js);

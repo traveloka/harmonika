@@ -28,7 +28,7 @@
     "colors": "^1.1.2",
     "commander": "^2.6.0",
     "escodegen": "^1.6.1",
-    "esformatter": "^0.6.1",
+    "esformatter": "^0.7.3",
     "estraverse": "^1.9.1",
     "esutils": "^1.1.6",
     "glob": "^5.0.14",

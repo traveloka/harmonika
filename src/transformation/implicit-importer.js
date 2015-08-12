@@ -1,3 +1,6 @@
+/**
+ * Import every undefined Object
+ */
 import estraverse from 'estraverse';
 import ImportDefaultSpecifier from './../syntax/import-default-specifier.js';
 import ImportDeclaration from './../syntax/import-declaration.js';
@@ -28,9 +31,10 @@ var unidentifiedIdentifier = [],
   identifiedIdentifier = [],
   defaultImportSource = {};
 
+
 function reset(){
   unidentifiedIdentifier = [];
-  identifiedIdentifier = ['Object', 'console', 'JSON', 'window'];
+  identifiedIdentifier = ["this", "Object", "Function", "Boolean", "Symbol", "Error", "EvalError", "InternalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "Number", "Math", "Date", "String", "RegExp", "Array", "Int8Array", "Uint8Array", "Uint8ClampedArray", "Int16Array", "Uint16Array", "Int32Array", "Uint32Array", "Float32Array", "Float64Array", "Map", "Set", "WeakMap", "WeakSet", "SIMD", "SIMD.Float32x4", "SIMD.Float64x2", "SIMD.Int8x16", "SIMD.Int16x8", "SIMD.Int32x4", "ArrayBuffer", "DataView", "JSON", "Promise", "Generator", "GeneratorFunction", "Reflect", "Proxy", "Intl", "Intl.Collator", "Intl.DateTimeFormat", "Intl.NumberFormat", "Iterator", "ParallelArray", "StopIteration", 'console', 'window'];
   defaultImportSource = {
     '$' : 'jquery'
   };
@@ -44,8 +48,10 @@ function importDetector(node) {
 
     for(let i=0; i<specifiers.length; i++) {
       let specifier = specifiers[i];
-      if(specifier.id.type === 'Identifier') {
+      if(specifier.id && specifier.id.type === 'Identifier') {
         identifiedIdentifier.push(specifier.id.name);
+      }else if(specifier.local && specifier.local.type === 'Identifier'){
+        identifiedIdentifier.push(specifier.local.name);
       }
     }
 
@@ -55,7 +61,7 @@ function importDetector(node) {
 
 function identifierDetector(node) {
 
-  if(node.type === 'MemberExpression' && !NodeDetector.calledByThis(node)) {
+  if(node.type === 'MemberExpression') {
 
     let calleeObjectName = NodeDetector.getCalleeObject(node.object);
     if(calleeObjectName && _.indexOf(unidentifiedIdentifier, calleeObjectName) === -1) {

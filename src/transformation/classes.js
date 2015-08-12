@@ -1,5 +1,20 @@
 /**
  * Convert any function with prototype to class with method
+ *
+ *
+ * Step :
+ * 1. functionDetector : Traverse and save all function on `functions` (exclude prototype function)
+ * 2. classMaker : Find all prototype assignment and static object member
+ * 2.a When found prototype assignment, call createClass to create new class declaration with the constructor method from `functions` which have the same identifier
+ * 2.a.1 Find `call` function call inside constructor to determine whether this is a child class or not
+ * 2.a.2 Add this constructor to new created class
+ * 2.a.3 save new created class node to .class and node._class attribute of the original function (function saved on `functions`)
+ * 2.b Save current prototype assignment to new created class body and add ._remove attribute to the parent (ExpressionStatement in this case)
+ * 2.c Detect getter-setter on es5 (which utilize Object.defineProperty) and convert to es6 getter-setter, add to class(with same identifier) and add ._remove to the parent
+ * 3. classReplacement :
+ * 3.a Remove all node with ._remove
+ * 3.b Replace all node with its ._class
+ * 3.c Replace all node with ._replace with its ._replace._class
  */
 
 import estraverse from 'estraverse';
@@ -167,6 +182,11 @@ function functionDetector(node, parent) {
 
 }
 
+/**
+ * Checking whether variable; which call the prototype, exist on `functions`
+ * @param identifierName
+ * @returns {boolean}
+ */
 function classDefined(identifierName) {
   if(identifierName.type === 'Identifier') {
     for (let _function of functions) {
