@@ -34,7 +34,7 @@ var unidentifiedIdentifier = [],
 
 function reset(){
   unidentifiedIdentifier = [];
-  identifiedIdentifier = ["this", "Object", "Function", "Boolean", "Symbol", "Error", "EvalError", "InternalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError", "Number", "Math", "Date", "String", "RegExp", "Array", "Int8Array", "Uint8Array", "Uint8ClampedArray", "Int16Array", "Uint16Array", "Int32Array", "Uint32Array", "Float32Array", "Float64Array", "Map", "Set", "WeakMap", "WeakSet", "SIMD", "SIMD.Float32x4", "SIMD.Float64x2", "SIMD.Int8x16", "SIMD.Int16x8", "SIMD.Int32x4", "ArrayBuffer", "DataView", "JSON", "Promise", "Generator", "GeneratorFunction", "Reflect", "Proxy", "Intl", "Intl.Collator", "Intl.DateTimeFormat", "Intl.NumberFormat", "Iterator", "ParallelArray", "StopIteration", 'console', 'window'];
+  identifiedIdentifier = ['this', 'Object', 'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError', 'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String', 'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array', 'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet', 'SIMD', 'SIMD.Float32x4', 'SIMD.Float64x2', 'SIMD.Int8x16', 'SIMD.Int16x8', 'SIMD.Int32x4', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect', 'Proxy', 'Intl', 'Intl.Collator', 'Intl.DateTimeFormat', 'Intl.NumberFormat', 'Iterator', 'ParallelArray', 'StopIteration', 'console', 'window'];
   defaultImportSource = {
     '$' : 'jquery'
   };
