@@ -2395,16 +2395,18 @@ var VariableDeclaration = _interopRequire(require("./../syntax/variable-declarat
 
 var VariableDeclarator = _interopRequire(require("./../syntax/variable-declarator.js"));
 
-var merge = _interopRequire(require("lodash/object/merge.js"));
-
 var union = _interopRequire(require("lodash/array/union.js"));
+
+var path = _interopRequire(require("path"));
 
 module.exports = function (ast, param, callback) {
 
   reset();
 
-  if (typeof param === "object") {
-    namespacePrefix = merge(namespacePrefix, param.namespacePrefix);
+  if (typeof param === "object" && param.filename) {
+    var filename = param.filename.split(path.sep);
+    var object = filename[filename.length - 1].split(".");
+    identifiedObject.push(object[0]);
   }
 
   var _iteratorNormalCompletion = true;
@@ -2445,11 +2447,9 @@ module.exports = function (ast, param, callback) {
   }
 };
 
-var namespacePrefix = [],
-    identifiedObject = [];
+var identifiedObject = [];
 
 function reset() {
-  namespacePrefix = [];
   identifiedObject = [];
 }
 
@@ -2486,6 +2486,31 @@ function getIdentifiedObject(node) {
         }
       }
     }
+  } else if (node.type === "ImportDeclaration") {
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+      for (var _iterator2 = node.specifiers[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        var specifier = _step2.value;
+
+        identifiedObject.push(specifier.id.name);
+      }
+    } catch (err) {
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion2 && _iterator2["return"]) {
+          _iterator2["return"]();
+        }
+      } finally {
+        if (_didIteratorError2) {
+          throw _iteratorError2;
+        }
+      }
+    }
   }
 }
 
@@ -2496,38 +2521,10 @@ function getIdentifiedObject(node) {
  */
 function stripNamespace(node) {
 
-  if (node.type === "MemberExpression") {
-    var _ret = (function () {
-      var containNamespace = false;
-      estraverse.traverse(node, {
-        enter: function enter(inNode) {
-          if (inNode.type === "Identifier" && namespacePrefix.indexOf(inNode.name) !== -1) {
-            containNamespace = true;
-            this["break"]();
-          }
-        }
-      });
+  if (node.type === "MemberExpression" && (identifiedObject.indexOf(node.property.name) !== -1 || node.property.name === "prototype")) {
 
-      if (containNamespace) {
-
-        if (node.object.type === "MemberExpression") {
-          if (node.object.property.name === "prototype" && node.object.object.type === "MemberExpression") {
-            node.object.object = node.object.object.property;
-          } else {
-            node.object = node.object.property;
-          }
-        } else {
-          node = new Identifier(node.property.name);
-        }
-
-        return {
-          v: node
-        };
-      }
-    })();
-
-    if (typeof _ret === "object") {
-      return _ret.v;
+    if (node.object.type === "MemberExpression" && identifiedObject.indexOf(node.object.property.name) === -1 && node.object.property.name !== "prototype") {
+      return new Identifier(node.property.name);
     }
   }
 }
@@ -2571,7 +2568,7 @@ function variableDeclaratorHandler(node, parent) {
     }
   }
 }
-},{"./../syntax/identifier.js":10,"./../syntax/variable-declaration.js":21,"./../syntax/variable-declarator.js":22,"estraverse":189,"lodash/array/union.js":194,"lodash/object/merge.js":236}],32:[function(require,module,exports){
+},{"./../syntax/identifier.js":10,"./../syntax/variable-declaration.js":21,"./../syntax/variable-declarator.js":22,"estraverse":189,"lodash/array/union.js":194,"path":43}],32:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -2801,7 +2798,7 @@ var Transformer = (function () {
           }
         });
 
-        doTransform("namespaceRemoval", namespaceRemovalTransformation, { namespacePrefix: this.options.namespacePrefix });
+        doTransform("namespaceRemoval", namespaceRemovalTransformation);
         doTransform("implicitImporter", implicitImporterTransformation);
         doTransform("classes", classTransformation);
         doTransform("stringTemplates", templateStringTransformation);
@@ -2998,7 +2995,6 @@ Transformer.defaultOptions = {
     generateTest: false,
     generateExport: true
   },
-  namespacePrefix: [],
   testTemplate: "./src/tpl/spec.js",
   formatter: false,
   escodegenOptions: {
