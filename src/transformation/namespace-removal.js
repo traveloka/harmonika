@@ -14,7 +14,7 @@ function (ast, param, callback) {
 
   reset();
 
-  if(typeof param === 'object') {
+  if(typeof param === 'object' && param.filename) {
     let filename = (param.filename).split(path.sep);
     let object = filename[filename.length-1].split('.');
     identifiedObject.push(object[0]);
@@ -73,8 +73,7 @@ function stripNamespace(node) {
   if(node.type === 'MemberExpression' && (identifiedObject.indexOf(node.property.name) !== -1 || node.property.name === 'prototype')) {
 
     if(
-      (node.object.type === 'MemberExpression' && identifiedObject.indexOf(node.object.property.name) === -1 && node.object.property.name !== 'prototype') ||
-      node.object.type !== 'MemberExpression' ){
+      (node.object.type === 'MemberExpression' && identifiedObject.indexOf(node.object.property.name) === -1 && node.object.property.name !== 'prototype')){
       return new Identifier(node.property.name);
     }
 

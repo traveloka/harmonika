@@ -9,7 +9,7 @@ function test(script) {
   var transformObj = {
     key:'namespace-removal',
     func:namespaceRemovalTransformation,
-    param: {namespacePrefix : ['tv']}
+    param: {filename : 'a.js'}
   };
   transformer.applyTransformation(transformObj);
   return transformer.out();
@@ -18,21 +18,21 @@ function test(script) {
 describe('Namespace removal', function () {
 
   it('should remove namespace from function definition if exist in namespacePrefix', function () {
-    var script = 'tv.c.d = function(x, y, x) {};';
+    var script = 'tv.b.a = function(x, y, x) {};';
 
-    expect(test(script)).to.equal('var d = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('var a = function (x, y, x) {\n};');
   });
 
   it('should not remove static function namespace', function () {
-    var script = 'tv.c.d = function(x, y, x) {};\ntv.c.d.e = function(x, y, x) {};';
+    var script = 'c.b.a = function(x, y, x) {};\nc.b.a.x = function(x, y, x) {};';
 
-    expect(test(script)).to.equal('var d = function (x, y, x) {\n};\nd.e = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('var a = function (x, y, x) {\n};\na.x = function (x, y, x) {\n};');
   });
 
   it('should not remove namespace from function definition', function () {
-    var script = 'var c = function() {};\ntv.b.c.d = function(x, y, x) {};';
+    var script = 'var a = function() {};\nc.b.a.x = function(x, y, x) {};';
 
-    expect(test(script)).to.equal('var c = function () {\n};\nc.d = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('var a = function () {\n};\na.x = function (x, y, x) {\n};');
   });
 
 
@@ -43,21 +43,21 @@ describe('Namespace removal', function () {
   });
 
   it('shouldn\'t remove `prototype`', function () {
-    var script = 'tv.b.c.prototype.d = function(x, y, x) {};';
+    var script = 'c.b.a.prototype.x = function(x, y, x) {};';
 
-    expect(test(script)).to.equal('c.prototype.d = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('a.prototype.x = function (x, y, x) {\n};');
   });
 
   it('shouldn\'t change right `prototype`', function () {
-    var script = 'c.prototype.d = function(x, y, x) {};';
+    var script = 'var b = {};\nb.prototype.x = function(x, y, x) {};';
 
-    expect(test(script)).to.equal('c.prototype.d = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('var b = {};\nb.prototype.x = function (x, y, x) {\n};');
   });
 
   it('should remove namespace from call', function () {
-    var script = 'tv.b.c.call(this, x, y);';
+    var script = 'tv.b.a.call(this, x, y);';
 
-    expect(test(script)).to.equal('c.call(this, x, y);');
+    expect(test(script)).to.equal('a.call(this, x, y);');
   });
 
   it('should not remove this', function () {
@@ -66,10 +66,10 @@ describe('Namespace removal', function () {
     expect(test(script)).to.equal('this._getAPIUrl(this.API.PAX_VALIDATION);');
   });
 
-  it('should remove property namespace', function () {
-    var script = 'var a = tv.c()';
+  it('should not remove namespace', function () {
+    var script = 'var x = a.c();';
 
-    expect(test(script)).to.equal('var a = c();');
+    expect(test(script)).to.equal(script);
   });
 
 });
