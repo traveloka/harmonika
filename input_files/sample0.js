@@ -1,7 +1,10 @@
 /**
  * Created by semmatabei on 8/13/15.
  */
-var b = function(){
+if(goog.isDefAndNotNull(x) && a=='1' && b=='1'){
 
-};
-b.prototype.x = function(x, y, x) {};
+}
+
+if(a==1 && (x !== null && typeof x !== 'undefined')){
+
+}

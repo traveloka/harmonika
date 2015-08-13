@@ -17,6 +17,10 @@ import Identifier from './../syntax/identifier.js';
 import VariableDeclaration from './../syntax/variable-declaration.js';
 import VariableDeclarator from './../syntax/variable-declarator.js';
 import ObjectExpression from './../syntax/object-expression.js';
+import LogicalExpression from './../syntax/logical-expression.js';
+import BinaryExpression from './../syntax/binary-expression.js';
+import UnaryExpression from './../syntax/unary-expression.js';
+import Literal from './../syntax/literal.js';
 import path from 'path';
 
 export default
@@ -90,10 +94,14 @@ function googProvideDetector(node){
 // This is separated from googProvideDetector to ensure provide will always detected first because following functionality depends on provided name
 function googDetector(node) {
 
-  if(node.type === 'ExpressionStatement' && node.expression.type === 'CallExpression' && node.expression.callee.type === 'MemberExpression'){
+  if(
+    (node.type === 'ExpressionStatement' && node.expression.type === 'CallExpression' && node.expression.callee.type === 'MemberExpression') ||
+    (node.type === 'CallExpression' && node.callee.type === 'MemberExpression')
+  ){
 
-    let callExpressionNode = node.expression;
+    let callExpressionNode = node.expression || node;
     let calleeNode = callExpressionNode.callee;
+
     if(calleeNode.object.type === 'Identifier' && calleeNode.object.name === 'goog' && calleeNode.property.type === 'Identifier'){
 
       switch(calleeNode.property.name){
@@ -106,12 +114,33 @@ function googDetector(node) {
         case 'inherits' :
           googInheritsHandler(this, callExpressionNode);
           break;
+        case 'isDefAndNotNull' :
+          return isDefAndNotNullHandler(callExpressionNode);
       }
 
     }
 
   }
 
+}
+
+function isDefAndNotNullHandler(node){
+
+  let identifier = node.arguments[0];
+
+  let notNullCondition = new BinaryExpression(
+    identifier,
+    new Literal('null'),
+    BinaryExpression.OP_NOT_EQUAL
+  );
+
+  let notDefinedCondition = new BinaryExpression(
+    new UnaryExpression(true, UnaryExpression.TYPEOF, identifier),
+    new Literal('undefined'),
+    BinaryExpression.OP_NOT_EQUAL
+  );
+
+  return new LogicalExpression(notNullCondition, notDefinedCondition, LogicalExpression.OP_AND);
 }
 
 function googRequireHandler(callExpressionNode){

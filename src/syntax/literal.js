@@ -17,8 +17,18 @@ class Literal extends BaseSyntax {
    *
    * @constructor
    */
-  constructor() {
+  constructor(value) {
     super('Literal');
+    if(value){
+      this.value = value;
+      this.raw = value;
+    }else{
+      this._constructor();
+    }
+
+  }
+
+  _constructor() {
     this.value = null;
     this.raw = null;
   }

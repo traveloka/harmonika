@@ -52,4 +52,10 @@ describe('Goog removal', function () {
     expect(test(script)).to.be.equal('import f from \'../e/f.js\';');
   });
 
+  it('should change goog.isDefAndNotNull', function () {
+    var script = 'goog.isDefAndNotNull(x);';
+
+    expect(test(script)).to.be.equal('(x !== \'null\' && typeof x !== \'undefined\')');
+  });
+
 });

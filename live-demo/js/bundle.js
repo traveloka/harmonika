@@ -2523,7 +2523,7 @@ function stripNamespace(node) {
 
   if (node.type === "MemberExpression" && (identifiedObject.indexOf(node.property.name) !== -1 || node.property.name === "prototype")) {
 
-    if (node.object.type === "MemberExpression" && identifiedObject.indexOf(node.object.property.name) === -1 && node.object.property.name !== "prototype") {
+    if (node.object.type === "MemberExpression" && identifiedObject.indexOf(node.object.property.name) === -1 && node.object.property.name !== "prototype" || node.object.type !== "MemberExpression" && identifiedObject.indexOf(node.object.name) === -1) {
       return new Identifier(node.property.name);
     }
   }

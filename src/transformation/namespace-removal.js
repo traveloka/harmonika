@@ -74,7 +74,7 @@ function stripNamespace(node) {
 
     if(
       (node.object.type === 'MemberExpression' && identifiedObject.indexOf(node.object.property.name) === -1 && node.object.property.name !== 'prototype') ||
-      node.object.type !== 'MemberExpression' && identifiedObject.indexOf(node.object.name) === -1 ){
+      node.object.type !== 'MemberExpression' && identifiedObject.indexOf(node.object.name) === -1 && node.object.type !== 'ThisExpression'){
       return new Identifier(node.property.name);
     }
 
