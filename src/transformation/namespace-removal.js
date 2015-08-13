@@ -6,6 +6,8 @@ import Identifier from './../syntax/identifier.js';
 import VariableDeclaration from './../syntax/variable-declaration.js';
 import VariableDeclarator from './../syntax/variable-declarator.js';
 import merge from 'lodash/object/merge.js';
+import union from 'lodash/array/union.js';
+import path from 'path';
 
 export default
 
@@ -14,7 +16,9 @@ function (ast, param, callback) {
   reset();
 
   if(typeof param === 'object') {
-    namespacePrefix = merge(namespacePrefix, param.namespacePrefix);
+    let filename = (param.filename).split(path.sep);
+    let object = filename[filename.length-1].split('.');
+    identifiedObject.push(object[0]);
   }
 
   for(let itm of ast.body){
@@ -34,10 +38,9 @@ function (ast, param, callback) {
   }
 }
 
-var namespacePrefix =[], identifiedObject = [];
+var identifiedObject = [];
 
 function reset(){
-  namespacePrefix = [];
   identifiedObject = [];
 }
 
@@ -54,6 +57,10 @@ function getIdentifiedObject(node) {
     for(let declaration of node.declarations) {
       identifiedObject.push(declaration.id.name);
     }
+  }else if(node.type === 'ImportDeclaration'){
+    for(let specifier of node.specifiers) {
+      identifiedObject.push(specifier.id.name);
+    }
   }
 }
 
@@ -64,32 +71,14 @@ function getIdentifiedObject(node) {
  */
 function stripNamespace(node) {
 
-  if(node.type === 'MemberExpression'){
-    let containNamespace = false;
-    estraverse.traverse(node, {
-      enter: function(inNode) {
-        if(inNode.type === 'Identifier' && namespacePrefix.indexOf(inNode.name) !== -1) {
-          containNamespace = true;
-          this.break();
-        }
-      }
-    });
+  if(node.type === 'MemberExpression' && (identifiedObject.indexOf(node.property.name) !== -1 || node.property.name === 'prototype')) {
 
-    if(containNamespace) {
-
-      if(node.object.type === 'MemberExpression'){
-        if(node.object.property.name === 'prototype' && node.object.object.type === 'MemberExpression'){
-          node.object.object = node.object.object.property;
-        }else{
-          node.object = node.object.property;
-        }
-      }else{
-        node = new Identifier(node.property.name);
-      }
-
-      return node;
-
+    if(
+      (node.object.type === "MemberExpression" && identifiedObject.indexOf(node.object.property.name) === -1 && node.object.property.name !== 'prototype') ||
+      node.object.type !== "MemberExpression" ){
+      return new Identifier(node.property.name);
     }
+
   }
 
 }
@@ -126,8 +115,8 @@ function variableDeclaratorHandler(node, parent) {
 
       let variableDeclaration = new VariableDeclaration();
       variableDeclaration.addDeclaration(variableDeclarator);
-      if(parent.leadingComments) {
-        variableDeclaration.leadingComments = parent.leadingComments;
+      if(parent.leadingComments || node.leadingComments) {
+        variableDeclaration.leadingComments = union(parent.leadingComments, node.leadingComments);
       }
 
       return variableDeclaration;

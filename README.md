@@ -41,7 +41,7 @@ $ node bin/index.js -s input_files/sample2.js
 
 ## Added features
 - Namespace (support to remove namespace, since namespace is anti-pattern fo javascript)
-- Google Closure code (`goog.require`, `goog.provide`, `goog.inherits`) to compatible ES6 features
+- Google Closure code (`goog.require`, `goog.provide`, `goog.inherits`, `goog.isDefinedAndNotNull`) to compatible ES6 features
 - Detect Inheritance (`super` call, `extend`)
 - Fix existing constructor to support arguments
 - `import` support
@@ -58,4 +58,3 @@ $ node bin/index.js -s input_files/sample2.js
 ## To-do Features
 - [ ] Flow syntax
 - [ ] save typedef state
-- [ ] Improve namespace removal to only remove namespace defined on goog.require/provide

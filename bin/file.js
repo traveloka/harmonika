@@ -8,8 +8,7 @@ module.exports = function (options) {
     transformers: {
       generateTest : true
     },
-    addExport : true,
-    namespacePrefix : ['tv']
+    addExport : true
   };
 
 

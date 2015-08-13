@@ -66,7 +66,7 @@ class Transformer {
       }
     });
 
-    doTransform('namespaceRemoval', namespaceRemovalTransformation, {namespacePrefix : this.options.namespacePrefix});
+    doTransform('namespaceRemoval', namespaceRemovalTransformation);
     doTransform('implicitImporter', implicitImporterTransformation);
     doTransform('classes', classTransformation);
     doTransform('stringTemplates', templateStringTransformation);
@@ -233,7 +233,6 @@ Transformer.defaultOptions = {
     generateTest : false,
     generateExport : true
   },
-  namespacePrefix : [],
   testTemplate : './src/tpl/spec.js',
   formatter: false,
   escodegenOptions: {

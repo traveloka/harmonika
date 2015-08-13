@@ -17,7 +17,14 @@ editor.getSession().on('change', function(){
 function transpile(){
   var es6Wrap = $('#es6');
 
-  var transformer = new Transformer();
+  var transOptions = {
+    transformers: {
+      generateTest : true
+    },
+    addExport : true,
+    namespacePrefix : ['tv']
+  };
+  var transformer = new Transformer(transOptions);
   transformer.read(editor.getSession().getValue());
   transformer.applyTransformations();
   var result = '<code>'+transformer.out()+'</code>';
