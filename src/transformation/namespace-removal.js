@@ -5,7 +5,6 @@ import estraverse from 'estraverse';
 import Identifier from './../syntax/identifier.js';
 import VariableDeclaration from './../syntax/variable-declaration.js';
 import VariableDeclarator from './../syntax/variable-declarator.js';
-import merge from 'lodash/object/merge.js';
 import union from 'lodash/array/union.js';
 import path from 'path';
 
@@ -74,8 +73,8 @@ function stripNamespace(node) {
   if(node.type === 'MemberExpression' && (identifiedObject.indexOf(node.property.name) !== -1 || node.property.name === 'prototype')) {
 
     if(
-      (node.object.type === "MemberExpression" && identifiedObject.indexOf(node.object.property.name) === -1 && node.object.property.name !== 'prototype') ||
-      node.object.type !== "MemberExpression" ){
+      (node.object.type === 'MemberExpression' && identifiedObject.indexOf(node.object.property.name) === -1 && node.object.property.name !== 'prototype') ||
+      node.object.type !== 'MemberExpression' ){
       return new Identifier(node.property.name);
     }
 
