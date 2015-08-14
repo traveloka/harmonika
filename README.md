@@ -53,8 +53,9 @@ $ node bin/index.js -s input_files/sample2.js
 - Base class method call using `super`
 - Improve let/const to understand object assignment
 - Singleton export
+- Support Flow type checker 
 
  
 ## To-do Features
-- [ ] Flow syntax
+
 - [ ] save typedef state
