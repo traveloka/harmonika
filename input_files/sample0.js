@@ -1,10 +1,6 @@
 /**
  * Created by semmatabei on 8/13/15.
  */
-if(goog.isDefAndNotNull(x) && a=='1' && b=='1'){
-
-}
-
-if(a==1 && (x !== null && typeof x !== 'undefined')){
-
+function plus(obj1: number, obj2: number): number {
+  return 0;
 }

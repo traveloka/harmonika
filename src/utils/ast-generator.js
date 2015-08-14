@@ -47,10 +47,6 @@ export function read(js, options) {
   options.onToken = tokens;
   options.sourceType = 'module';
 
-  if (options.coffee) {
-    js = coffee.compile(js);
-  }
-
   let ast = acorn.parse(js, options);
 
   escodegen.attachComments(ast, comments, tokens);
