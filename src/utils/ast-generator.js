@@ -2,6 +2,7 @@ import acorn from 'acorn';
 import escodegen from 'escodegen';
 import fs from 'fs';
 import coffee from 'coffee-script';
+import * as babel from "babel";
 
 /**
  * This function reads a js file and transforms it into AST
@@ -18,7 +19,7 @@ export function readFile(file, options) {
   }
 
   if (options.sync) {
-    let js = fs.readFileSync(file);
+    let js = fs.readFileSync(file, "utf8");
     return this.read(js, options);
   } else {
     fs.readFile(file, (js) => {
@@ -47,9 +48,24 @@ export function read(js, options) {
   options.onToken = tokens;
   options.sourceType = 'module';
 
-  let ast = acorn.parse(js, options);
+  //let ast = acorn.parse(js, options);
+  //escodegen.attachComments(ast, comments, tokens);
 
-  escodegen.attachComments(ast, comments, tokens);
+  var parseOpts = {
+    allowImportExportEverywhere: true,
+    allowReturnOutsideFunction:  true,
+    allowHashBang:               true,
+    ecmaVersion:                 6,
+    looseModules:                true,
+    sourceType:                  'module',
+    locations:                   true,
+    plugins : {
+      jsx : true,
+      flow : true
+    }
+  };
+
+  let ast = babel.parse(js, parseOpts);
 
   return ast;
 }

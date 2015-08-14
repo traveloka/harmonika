@@ -97,7 +97,8 @@ function contextReplace(node) {
   }else if(node.type === 'ImportDeclaration' && node.specifiers.length === 1) {
 
     let specifier = new ImportDefaultSpecifier();
-    specifier.setIdentifierName(node.specifiers[0].id.name);
+    let specifierName = (node.specifiers[0].id)? node.specifiers[0].id.name : node.specifiers[0].local.name;
+    specifier.setIdentifierName(specifierName);
 
     node.specifiers[0] = specifier;
 
