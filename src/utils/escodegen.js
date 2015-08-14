@@ -575,7 +575,22 @@ function getNotationString(notation){
 
                 return result;
             }
+            break;
         }
+        case 'UnionTypeAnnotation' : {
+            var types = notation.types;
+            var result = '';
+            for(var tp=0; tp<types.length; tp++){
+                result += getNotationString(types[tp]);
+                if(tp < types.length-1) result+= ' | ';
+            }
+            return result;
+        }
+        case 'NullableTypeAnnotation' : {
+            var result = '?';
+            return result + getNotationString(notation.typeAnnotation);
+        }
+
     }
 
     return 'any';
