@@ -1,4 +1,4 @@
-import estraverse from 'estraverse';
+import estraverse from './../utils/estraverse.js';
 import esutils from 'esutils/lib/ast.js';
 import TemplateLiteral from './../syntax/template-literal.js';
 import typeChecker from './../utils/type-checker.js';

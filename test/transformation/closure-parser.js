@@ -4,12 +4,12 @@
 var expect = require('chai').expect;
 var
   Transformer = require('./../../lib/transformer'),
-  googRemovalTransformation = require('./../../lib/transformation/goog-removal'),
+  closureParserTransformation = require('./../../lib/transformation/closure-parser'),
   transformer = new Transformer({formatter: false});
 
 function test(script) {
   transformer.read(script);
-  transformer.applyTransformation(googRemovalTransformation);
+  transformer.applyTransformation(closureParserTransformation);
   return transformer.out();
 }
 
@@ -17,7 +17,7 @@ function testFileName(script) {
   var fileName = null;
   transformer.read(script);
   transformer.applyTransformation({
-    func:googRemovalTransformation,
+    func:closureParserTransformation,
     callback: function(name){
       fileName = name;
     }
@@ -25,7 +25,7 @@ function testFileName(script) {
   return fileName;
 }
 
-describe('Goog removal', function () {
+describe('Closure Parser', function () {
 
   it('should remove goog.inherits', function () {
     var script = 'goog.inherits("a")';

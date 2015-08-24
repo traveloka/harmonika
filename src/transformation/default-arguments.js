@@ -1,4 +1,4 @@
-import estraverse from 'estraverse';
+import estraverse from './../utils/estraverse.js';
 // import AssignmentPattern from '../syntax/assignment-pattern';
 
 export default

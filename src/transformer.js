@@ -7,7 +7,7 @@ import path from 'path';
 
 // Transformers
 import namespaceRemovalTransformation from './transformation/namespace-removal.js';
-import gooRemovalTransformation from './transformation/goog-removal.js';
+import closureParserTransformation from './transformation/closure-parser.js';
 import classTransformation from './transformation/classes.js';
 import exporterTransformation from './transformation/exporter.js';
 import templateStringTransformation from './transformation/template-string.js';
@@ -60,7 +60,7 @@ class Transformer {
       }
     };
 
-    doTransform('googRemoval', gooRemovalTransformation, {}, function(fileName){
+    doTransform('closureParser', closureParserTransformation, {}, function(fileName){
       if(fileName) {
         self.fileName = fileName;
       }
@@ -228,7 +228,7 @@ Transformer.defaultOptions = {
     defaultArguments: true,
     objectMethods: true,
     namespaceRemoval : true,
-    googRemoval : true,
+    closureParser : true,
     implicitImporter: true,
     generateTest : false,
     generateExport : true

@@ -17,7 +17,7 @@
  * 3.c Replace all node with ._replace with its ._replace._class
  */
 
-import estraverse from 'estraverse';
+import estraverse from './../utils/estraverse.js';
 import MethodDefinition from './../syntax/method-definition.js';
 import ClassDeclaration from './../syntax/class-declaration.js';
 import Identifier from './../syntax/identifier.js';
@@ -221,6 +221,9 @@ function classMaker(node, parent) {
           let method = node.right;
           let createdMethod = new MethodDefinition();
           createdMethod.leadingComments = parent.leadingComments;
+          if(method.returnType){
+            createdMethod.returnType = method.returnType;
+          }
 
           if (method.type === 'Identifier') {
 

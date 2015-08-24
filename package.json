@@ -29,7 +29,7 @@
     "commander": "^2.6.0",
     "escodegen": "^1.6.1",
     "esformatter": "^0.7.3",
-    "estraverse": "^1.9.1",
+    "estraverse": "^4.1.0",
     "esutils": "^1.1.6",
     "glob": "^5.0.14",
     "lodash": "^3.3.1",

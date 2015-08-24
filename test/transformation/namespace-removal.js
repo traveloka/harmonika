@@ -18,40 +18,40 @@ function test(script) {
 describe('Namespace removal', function () {
 
   it('should remove namespace from function definition if exist in namespacePrefix', function () {
-    var script = 'tv.b.a = function(x, y, x) {};';
+    var script = 'tv.b.a = function(x, y, z) {};';
 
-    expect(test(script)).to.equal('var a = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('var a = function (x, y, z) {\n};');
   });
 
   it('should not remove static function namespace', function () {
-    var script = 'c.b.a = function(x, y, x) {};\nc.b.a.x = function(x, y, x) {};';
+    var script = 'c.b.a = function(x, y, z) {};\nc.b.a.x = function(x, y, z) {};';
 
-    expect(test(script)).to.equal('var a = function (x, y, x) {\n};\na.x = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('var a = function (x, y, z) {\n};\na.x = function (x, y, z) {\n};');
   });
 
   it('should not remove namespace from function definition', function () {
-    var script = 'var a = function() {};\nc.b.a.x = function(x, y, x) {};';
+    var script = 'var a = function() {};\nc.b.a.x = function(x, y, z) {};';
 
-    expect(test(script)).to.equal('var a = function () {\n};\na.x = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('var a = function () {\n};\na.x = function (x, y, z) {\n};');
   });
 
 
   it('shouldn\'t change right function definition', function () {
-    var script = 'var d = function (x, y, x) {\n};';
+    var script = 'var d = function (x, y, z) {\n};';
 
     expect(test(script)).to.equal(script);
   });
 
   it('shouldn\'t remove `prototype`', function () {
-    var script = 'c.b.a.prototype.x = function(x, y, x) {};';
+    var script = 'c.b.a.prototype.x = function(x, y, z) {};';
 
-    expect(test(script)).to.equal('a.prototype.x = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('a.prototype.x = function (x, y, z) {\n};');
   });
 
   it('shouldn\'t change right `prototype`', function () {
-    var script = 'var b = {};\nb.prototype.x = function(x, y, x) {};';
+    var script = 'var b = {};\nb.prototype.x = function(x, y, z) {};';
 
-    expect(test(script)).to.equal('var b = {};\nb.prototype.x = function (x, y, x) {\n};');
+    expect(test(script)).to.equal('var b = {};\nb.prototype.x = function (x, y, z) {\n};');
   });
 
   it('should remove namespace from call', function () {

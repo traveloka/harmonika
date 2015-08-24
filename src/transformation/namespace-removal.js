@@ -1,7 +1,7 @@
 /**
  * Created by semmatabei on 7/29/15.
  */
-import estraverse from 'estraverse';
+import estraverse from './../utils/estraverse.js';
 import Identifier from './../syntax/identifier.js';
 import VariableDeclaration from './../syntax/variable-declaration.js';
 import VariableDeclarator from './../syntax/variable-declarator.js';

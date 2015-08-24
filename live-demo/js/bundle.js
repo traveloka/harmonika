@@ -2933,7 +2933,7 @@ var path = _interopRequire(require("path"));
 
 var namespaceRemovalTransformation = _interopRequire(require("./transformation/namespace-removal.js"));
 
-var gooRemovalTransformation = _interopRequire(require("./transformation/goog-removal.js"));
+var gooRemovalTransformation = _interopRequire(require("./transformation/closure-parser.js"));
 
 var classTransformation = _interopRequire(require("./transformation/classes.js"));
 

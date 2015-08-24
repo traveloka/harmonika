@@ -1,4 +1,4 @@
-import estraverse from 'estraverse';
+import estraverse from './../utils/estraverse.js';
 import ArrowExpression from './../syntax/arrow-expression.js';
 import _ from 'lodash';
 

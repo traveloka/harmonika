@@ -1,4 +1,4 @@
-import estraverse from 'estraverse';
+import estraverse from './estraverse.js';
 
 /**
  * Check if there is `prototype` on the left hand assignment

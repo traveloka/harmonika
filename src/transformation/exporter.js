@@ -2,6 +2,9 @@
  * Created by traveloka on 11/08/15.
  */
 import ExportDeclaration from './../syntax/export-declaration.js';
+import Identifier from './../syntax/identifier.js';
+import GenericTypeAnnotation from './../syntax/generic-type-annotation.js';
+import TypeAlias from './../syntax/type-alias.js';
 
 export default
   function (ast, param, callback) {
@@ -23,11 +26,22 @@ export default
       }
     }
 
-    if(lastExportItem){
+    if(itemToDefaultExport){
+
+
       let exportDeclaration = new ExportDeclaration();
+      let identifierToExp = new Identifier(itemToDefaultExport);
       exportDeclaration.default = true;
-      exportDeclaration.declaration = lastExportItem;
+      exportDeclaration.declaration = identifierToExp;
       ast.body.push(exportDeclaration);
+    }
+
+    if(itemToExportAsAlias.length > 0){
+      for(let i=0; i<itemToExportAsAlias.length; i++){
+        let exportDeclaration = new ExportDeclaration();
+        exportDeclaration.declaration = itemToExportAsAlias[i];
+        ast.body.push(exportDeclaration);
+      }
     }
 
     if(callback){
@@ -35,14 +49,15 @@ export default
     }
   }
 
-var definedExportName = null, defaultExported = false, nodeTypeCounter = {}, definedExportNameMatch = null, lastExportItem = null;
+var definedExportName = null, defaultExported = false, nodeTypeCounter = {}, definedExportNameMatch = null, itemToDefaultExport = null, itemToExportAsAlias = [];
 
 function reset(){
   definedExportName = null;
   defaultExported = false;
   nodeTypeCounter = {};
   definedExportNameMatch = null;
-  lastExportItem = null;
+  itemToDefaultExport = null;
+  itemToExportAsAlias = [];
 }
 
 function checkMatchFileName(name){
@@ -100,7 +115,7 @@ function replaceClassAndGlobalVariable(node){
       if(node.type === 'VariableDeclaration'){
         for(let i=0; i<node.declarations.length; i++){
           if(node.declarations[i].matchExportName){
-            lastExportItem = node.declarations[i].id;
+            itemToDefaultExport = node.declarations[i].id.name;
             return false;
           }
         }
@@ -117,15 +132,22 @@ function replaceClassAndGlobalVariable(node){
         defaultExported = true;
 
         if(node.type === 'VariableDeclaration'){
-          lastExportItem = node.declarations[0].id;
+          itemToDefaultExport = node.declarations[0].id.name;
           return false;
+        }else if(node.type === 'ClassDeclaration'){
+          let annotation = new GenericTypeAnnotation(node.id.name);
+          let typeAlias = new TypeAlias(node.id.name, annotation);
+          itemToExportAsAlias.push(typeAlias);
         }
+
       }
 
     }
 
+    let leadingComments = node.leadingComments;
+    node.leadingComments = null;
     exportDeclaration.declaration = node;
-    exportDeclaration.leadingComments = node.leadingComments;
+    exportDeclaration.leadingComments = leadingComments;
     return exportDeclaration;
   }
 

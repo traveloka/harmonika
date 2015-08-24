@@ -22,6 +22,7 @@ class ImportDeclaration extends BaseSyntax {
 
     this.source = new Literal();
     this.specifiers = [];
+    this.importKind = null;
 
   }
 

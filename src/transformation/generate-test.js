@@ -1,7 +1,7 @@
 /**
  * Created by traveloka on 04/08/15.
  */
-import estraverse from 'estraverse';
+import estraverse from './../utils/estraverse.js';
 import Identifier from './../syntax/identifier.js';
 import ImportDefaultSpecifier from './../syntax/import-default-specifier.js';
 import ImportDeclaration from './../syntax/import-declaration.js';

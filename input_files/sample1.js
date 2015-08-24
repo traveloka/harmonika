@@ -149,7 +149,7 @@ tv.core.comm.context.TvUserContext.prototype.getUser = function(
  */
 tv.core.comm.context.TvUserContext.prototype.parseUserContext = function(result, callback) {
   var self = this;
-  /** @param {tv.core.comm.context.TvUserContext.user|null} user */
+  /** @type {tv.core.comm.context.TvUserContext.user|null} user */
   var responseCallback = function(user) {
     var secure = self.isCurrentUserOnLoginState();
     self._contextProvider.parse(result, secure);

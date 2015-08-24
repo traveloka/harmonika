@@ -1,4 +1,4 @@
-import estraverse from 'estraverse';
+import estraverse from './../utils/estraverse.js';
 
 export default
   function (ast, param, callback) {

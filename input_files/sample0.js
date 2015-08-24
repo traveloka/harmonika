@@ -1,6 +1,17 @@
 /**
- * Created by semmatabei on 8/13/15.
+ * A
+ * @type {string}
  */
-function plus(obj: number | string | boolean, obj0: ?Number, obj1: Array<number> | number, obj2: Class<MyClass, T>): number {
-  return 0;
-}
+var a = ''; // trailing comment A
+
+/**
+ * B
+ * @type {string}
+ */
+var b = '';
+
+/**
+ * C
+ * @type {string}
+ */
+var b = '';

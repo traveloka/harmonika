@@ -538,6 +538,9 @@ function generateTypeAnnotation(node) {
         }
 
         return ': '+getNotationString(notation);
+    }else if(node.type === 'TypeAlias'){
+        var right = node.right;
+        return getNotationString(right);
     }
 
 
@@ -558,9 +561,20 @@ function getNotationString(notation){
             return 'number';
         case 'StringTypeAnnotation' :
             return 'string';
+        case 'ObjectTypeAnnotation' :
+            let properties = notation.properties;
+            let resultObj = '{' + newline;
+            for(let i=0; i<properties.length; i++){
+                resultObj += getNotationString(properties[i]);
+            }
+            return resultObj + '}';
+        case 'ObjectTypeProperty' :
+            let name = notation.key.name;
+            let value = getNotationString(notation.value);
+            return indent + name + ': ' + value + '; ' + newline;
         case 'GenericTypeAnnotation' : {
             if(notation.id && notation.id.type === 'Identifier'){
-                var result = notation.id.name;
+                let result = notation.id.name;
                 if(notation.typeParameters && notation.typeParameters.type === 'TypeParameterInstantiation'){
 
                     var params = notation.typeParameters.params;
@@ -700,7 +714,7 @@ function adjustMultilineComment(value, specialBase) {
 }
 
 function generateComment(comment, specialBase) {
-    if (comment.type === "Line") {
+    if (comment.type === "Line" || comment.type === "CommentLine") {
         if (endsWithLineTerminator(comment.value)) {
             return "//" + comment.value;
         } else {
@@ -749,6 +763,9 @@ function addComments(stmt, result) {
 
                 infix = sourceCode.substring(prevRange[1], range[0]);
                 count = (infix.match(/\n/g) || []).length;
+                if(comment.type === 'CommentBlock' && count === 0){
+                    count = 1;
+                }
                 result.push(stringRepeat("\n", count));
                 result.push(addIndent(generateComment(comment)));
 
@@ -761,7 +778,7 @@ function addComments(stmt, result) {
         } else {
             comment = stmt.leadingComments[0];
             result = [];
-            if (safeConcatenation && stmt.type === Syntax.Program && stmt.body.length === 0) {
+            if ((safeConcatenation && stmt.type === Syntax.Program && stmt.body.length === 0) || comment.type === 'CommentBlock') {
                 result.push("\n");
             }
             result.push(generateComment(comment));
@@ -772,6 +789,9 @@ function addComments(stmt, result) {
             for (i = 1, len = stmt.leadingComments.length; i < len; ++i) {
                 comment = stmt.leadingComments[i];
                 fragment = [generateComment(comment)];
+                if(comment.type === 'CommentBlock'){
+                  fragment.unshift("\n");
+                }
                 if (!endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
                     fragment.push("\n");
                 }
@@ -782,50 +802,50 @@ function addComments(stmt, result) {
         result.push(addIndent(save));
     }
 
-    if (stmt.trailingComments) {
-
-        if (preserveBlankLines) {
-            comment = stmt.trailingComments[0];
-            extRange = comment.extendedRange;
-            range = comment.range;
-
-            prefix = sourceCode.substring(extRange[0], range[0]);
-            count = (prefix.match(/\n/g) || []).length;
-
-            if (count > 0) {
-                result.push(stringRepeat("\n", count));
-                result.push(addIndent(generateComment(comment)));
-            } else {
-                result.push(prefix);
-                result.push(generateComment(comment));
-            }
-        } else {
-            tailingToStatement = !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString());
-            specialBase = stringRepeat(" ", calculateSpaces(toSourceNodeWhenNeeded([base, result, indent]).toString()));
-            for (i = 0, len = stmt.trailingComments.length; i < len; ++i) {
-                comment = stmt.trailingComments[i];
-                if (tailingToStatement) {
-                    // We assume target like following script
-                    //
-                    // var t = 20;  /**
-                    //               * This is comment of t
-                    //               */
-                    if (i === 0) {
-                        // first case
-                        result = [result, indent];
-                    } else {
-                        result = [result, specialBase];
-                    }
-                    result.push(generateComment(comment, specialBase));
-                } else {
-                    result = [result, addIndent(generateComment(comment))];
-                }
-                if (i !== len - 1 && !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
-                    result = [result, "\n"];
-                }
-            }
-        }
-    }
+    //if (stmt.trailingComments && (stmt.trailingComments[0].type === 'Line' || stmt.trailingComments[0].type === 'CommentLine')) {
+    //
+    //    if (preserveBlankLines) {
+    //        comment = stmt.trailingComments[0];
+    //        extRange = comment.extendedRange;
+    //        range = comment.range;
+    //
+    //        prefix = sourceCode.substring(extRange[0], range[0]);
+    //        count = (prefix.match(/\n/g) || []).length;
+    //
+    //        if (count > 0) {
+    //            result.push(stringRepeat("\n", count));
+    //            result.push(addIndent(generateComment(comment)));
+    //        } else {
+    //            result.push(prefix);
+    //            result.push(generateComment(comment));
+    //        }
+    //    } else {
+    //        tailingToStatement = !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString());
+    //        specialBase = stringRepeat(" ", calculateSpaces(toSourceNodeWhenNeeded([base, result, indent]).toString()));
+    //        for (i = 0, len = stmt.trailingComments.length; i < len; ++i) {
+    //            comment = stmt.trailingComments[i];
+    //            if (tailingToStatement) {
+    //                // We assume target like following script
+    //                //
+    //                // var t = 20;  /**
+    //                //               * This is comment of t
+    //                //               */
+    //                if (i === 0) {
+    //                    // first case
+    //                    result = [result, indent];
+    //                } else {
+    //                    result = [result, specialBase];
+    //                }
+    //                result.push(generateComment(comment, specialBase));
+    //            } else {
+    //                result = [result, addIndent(generateComment(comment))];
+    //            }
+    //            if (i !== len - 1 && !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
+    //                result = [result, "\n"];
+    //            }
+    //        }
+    //    }
+    //}
 
     return result;
 }
@@ -1240,7 +1260,7 @@ CodeGenerator.Statement = {
     },
 
     ExportDeclaration: function ExportDeclaration(stmt, flags) {
-        var result = [newline, "export"],
+        var result = ["export"],
           bodyFlags,
           that = this;
 
@@ -1380,6 +1400,15 @@ CodeGenerator.Statement = {
 
         // import ImportClause FromClause ;
         result = ["import"];
+
+        if(stmt.importKind){
+            switch(stmt.importKind){
+                case 'type' :
+                    result.push(space + 'type');
+                    break;
+            }
+        }
+
         cursor = 0;
 
         // ImportedBinding
@@ -2338,6 +2367,11 @@ CodeGenerator.Expression = {
 
     ModuleSpecifier: function ModuleSpecifier(expr, precedence, flags) {
         return this.Literal(expr, precedence, flags);
+    },
+
+    TypeAlias: function TypeAlias(expr, precedence, flags) {
+        var name = expr.id.name;
+        return ["type" + space , name, " = ", generateTypeAnnotation(expr), ';'];
     }
 
 };

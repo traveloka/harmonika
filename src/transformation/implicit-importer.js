@@ -1,7 +1,7 @@
 /**
  * Import every undefined Object
  */
-import estraverse from 'estraverse';
+import estraverse from './../utils/estraverse.js';
 import ImportDefaultSpecifier from './../syntax/import-default-specifier.js';
 import ImportDeclaration from './../syntax/import-declaration.js';
 import _ from 'lodash';

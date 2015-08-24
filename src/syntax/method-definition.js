@@ -47,8 +47,18 @@ class MethodDefinition extends BaseSyntax {
     }
   }
 
+
   get body() {
     return this.value.body;
+  }
+
+
+  set returnType(type) {
+    this.value.returnType = type;
+  }
+
+  get returnType() {
+    return this.value.returnType;
   }
 
   set params(params) {
