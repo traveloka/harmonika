@@ -279,36 +279,19 @@ function traverseAnnotation(node){
       for (let annotation in classifiedAnnotation) {
         if (classifiedAnnotation.hasOwnProperty(annotation)) {
 
-          if(annotation === annotationTokenizer.ANNOTATION.TYPE){
-            let maybeNode = getAnnotationForType(node, annotation, classifiedAnnotation[annotation].param1);
-            if(maybeNode) {
-              node = maybeNode;
-              resultNode = node;
-            }
-          }
-
-          if(annotation === annotationTokenizer.ANNOTATION.PARAM){
-            let maybeNode = getAnnotationForParam(node, annotation, classifiedAnnotation[annotation]);
-            if(maybeNode) {
-              node = maybeNode;
-              resultNode = node;
-            }
-          }
-
-          if(annotation === annotationTokenizer.ANNOTATION.RETURN){
-            let maybeNode = getAnnotationForReturn(node, annotation, classifiedAnnotation[annotation].param1);
-            if(maybeNode) {
-              node = maybeNode;
-              resultNode = node;
-            }
-          }
-
-          if(annotation === annotationTokenizer.ANNOTATION.TYPEDEF){
-            let maybeNode = getAnnotationForTypeDef(node, annotation, classifiedAnnotation[annotation].param1);
-            if(maybeNode) {
-              node = maybeNode;
-              resultNode = node;
-            }
+          switch(annotation){
+            case annotationTokenizer.ANNOTATION.TYPE :
+              resultNode = getAnnotationForType(node, annotation, classifiedAnnotation[annotation].param1);
+              break;
+            case annotationTokenizer.ANNOTATION.PARAM :
+              resultNode = getAnnotationForParam(node, annotation, classifiedAnnotation[annotation]);
+              break;
+            case annotationTokenizer.ANNOTATION.RETURN :
+              resultNode = getAnnotationForReturn(node, annotation, classifiedAnnotation[annotation].param1);
+              break;
+            case annotationTokenizer.ANNOTATION.TYPEDEF :
+              resultNode = getAnnotationForTypeDef(node, annotation, classifiedAnnotation[annotation].param1);
+              break;
           }
 
         }

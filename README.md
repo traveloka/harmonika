@@ -40,22 +40,18 @@ $ node bin/index.js -s input_files/sample2.js
 * Function properties in objects to Object methods
 
 ## Added features
-- Namespace (support to remove namespace, since namespace is anti-pattern fo javascript)
-- Google Closure code (`goog.require`, `goog.provide`, `goog.inherits`, `goog.isDefinedAndNotNull`) to compatible ES6 features
+- Remove Namespace
+- Convert Google Closure code (`goog.require`, `goog.provide`, `goog.inherits`, `goog.isDefinedAndNotNull`) to compatible ES6 features
+- Convert Closure annotation to Flow type (Currently support : `@param`, `@type`, `@typedef`, `@return`) and Import/Export type
 - Detect Inheritance (`super` call, `extend`)
-- Fix existing constructor to support arguments
+- Improve constructor to support arguments
 - `import` support
 - `export` support
 - Implicit import (import all undefined identifier)
-- Create test file for each parsed file
 - `static` method
 - `static` properties
 - Base class method call using `super`
 - Improve let/const to understand object assignment
 - Singleton export
-- Support Flow type checker 
-
  
 ## To-do Features
-
-- [ ] save typedef state

@@ -67,7 +67,10 @@ class Transformer {
     });
 
     doTransform('namespaceRemoval', namespaceRemovalTransformation);
-    doTransform('implicitImporter', implicitImporterTransformation);
+
+    let defaultImportSource = this.options.defaultImportSource;
+    doTransform('implicitImporter', implicitImporterTransformation, {defaultImportSource : defaultImportSource});
+
     doTransform('classes', classTransformation);
     doTransform('stringTemplates', templateStringTransformation);
     doTransform('arrowFunctions', arrowFunctionTransformation);
@@ -243,6 +246,7 @@ Transformer.defaultOptions = {
     },
     comment: true
   },
+  defaultImportSource : [],
   sourceDir : 'src',
   testDir : 'test',
   sync: true,

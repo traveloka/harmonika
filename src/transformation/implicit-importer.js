@@ -6,11 +6,18 @@ import ImportDefaultSpecifier from './../syntax/import-default-specifier.js';
 import ImportDeclaration from './../syntax/import-declaration.js';
 import _ from 'lodash';
 import NodeDetector from './../utils/node-detector.js';
+import merge from 'lodash/object/merge.js';
 
 export default
   function (ast, param, callback) {
 
     reset();
+
+    if(param){
+      if(param.defaultImportSource){
+        defaultImportSource = merge(defaultImportSource, param.defaultImportSource);
+      }
+    }
 
     estraverse.traverse(ast, {
       enter: importDetector
