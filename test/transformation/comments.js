@@ -23,10 +23,10 @@ describe('Comments', function () {
     done();
   });
 
-  it("shouldn't convert trailing comment", function (done) {
+  it("should remove trailing comment", function (done) {
     var script = 'var x = 42;    // trailing comment\n';
 
-    expect(test(script)).to.equal('const x = 42;    // trailing comment\n');
+    expect(test(script)).to.equal('const x = 42;');
     done();
   });
 
