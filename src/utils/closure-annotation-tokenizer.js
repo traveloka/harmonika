@@ -181,7 +181,7 @@ class ClosureAnnotationTokenizer {
     result = result.replace(regExp, _typeToken);
 
     result = self._handleMap(result);
-    result = this._containNull(result); // TODO : improve contain null, considered hacky
+    result = self._containNull(result); // TODO : improve contain null, considered hacky
 
     result = self._specialCaseHandler(result); // TODO : hacky
 
@@ -204,7 +204,7 @@ class ClosureAnnotationTokenizer {
     let regExpTypeGroup = new RegExp(/\([a-z,\s]*\)/ig); // (..., ..., ...)
     result = result.replace(regExpTypeGroup, (match) => 'any');
 
-    let regExpComplexObject = new RegExp(/Object<[a-z0-9,<>:\s]*>/ig); // Object<string,Object<string,Object<string,Array<string>>>>
+    let regExpComplexObject = new RegExp(/Object<[a-z0-9{}\[\],<>:\s]*>/ig); // Object<string,Object<string,Object<string,Array<string>>>>
     result = result.replace(regExpComplexObject, (match) => 'Object');
 
     if(result === ''){
@@ -231,11 +231,9 @@ class ClosureAnnotationTokenizer {
       return [open, key, separator, value, close].join('');
     }
 
-    let regExp = new RegExp(/[a-zA-Z0-9]*[\s]*(<)[\s]*([\|a-zA-Z0-9_]*)[\s]*(,)[\s]*([\|a-zA-Z0-9_]*)[\s]*(>)/g);
+    let regExp = new RegExp(/[a-zA-Z0-9]*[\s]*(<)[\s]*([\|a-zA-Z0-9_\?]*)[\s]*(,)[\s]*([\|a-zA-Z0-9_\?]*)[\s]*(>)/g);
     return type.replace(regExp, replacerMap);
   }
-
-
 
   _replaceEqualToQuestionMark(type){
     let result = type;
@@ -314,7 +312,7 @@ class ClosureAnnotationTokenizer {
 
   _containNull(str){ //TODO : Error
     if(str.indexOf('null') !== -1){
-      let regExp = new RegExp(/([^ \s:,{}<>()]*)/g);
+      let regExp = new RegExp(/([^ \s:,{}<>()\[\]]*)/g);
       return str.replace(regExp, this._replaceNull);
     }
     return str;
@@ -329,9 +327,9 @@ class ClosureAnnotationTokenizer {
       result = result.map(function(s){
 
         if(s.indexOf('?') === -1){
-          return '?'+result;
+          return '?'+s;
         }
-        return result;
+        return s;
 
       });
     }
