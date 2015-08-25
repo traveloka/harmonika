@@ -202,10 +202,10 @@ class ClosureAnnotationTokenizer {
     result = result.replace(regExpBackQMark, (match, type) => '?' + type);
 
     let regExpTypeGroup = new RegExp(/\([a-z,\s]*\)/ig); // (..., ..., ...)
-    result = result.replace(regExpTypeGroup, (match) => 'any');
+    result = result.replace(regExpTypeGroup, () => 'any');
 
     let regExpComplexObject = new RegExp(/Object<[a-z0-9{}\[\],<>:\s]*>/ig); // Object<string,Object<string,Object<string,Array<string>>>>
-    result = result.replace(regExpComplexObject, (match) => 'Object');
+    result = result.replace(regExpComplexObject, () => 'Object');
 
     if(result === ''){
       result = 'any';

@@ -101,7 +101,7 @@ function importType(ast){
   }
 
   for (var requirePath in listImport) {
-    if (listImport.hasOwnProperty(requirePath) && requirePath != providedName) {
+    if (listImport.hasOwnProperty(requirePath) && requirePath !== providedName) {
       let types = listImport[requirePath];
       let specifiers = [];
       for(let i=0; i<types.length; i++){
@@ -414,7 +414,7 @@ function getAnnotationForTypeDef(node, annotation, param1){
 }
 
 function getTypeAst(annotation, type, identifier /* optional */){
-  console.log(type);
+  //console.log(type);
   let ast = null, dummyStr, dummyAst;
 
   switch(annotation){
