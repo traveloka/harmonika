@@ -101,7 +101,7 @@ function importType(ast){
   }
 
   for (var requirePath in listImport) {
-    if (listImport.hasOwnProperty(requirePath)) {
+    if (listImport.hasOwnProperty(requirePath) && requirePath != providedName) {
       let types = listImport[requirePath];
       let specifiers = [];
       for(let i=0; i<types.length; i++){
@@ -164,6 +164,8 @@ function googDetector(node) {
           break;
         case 'isDefAndNotNull' :
           return isDefAndNotNullHandler(callExpressionNode);
+        case 'isString' :
+          return isStringHandler(callExpressionNode);
       }
 
     }
@@ -189,6 +191,19 @@ function isDefAndNotNullHandler(node){
   );
 
   return new LogicalExpression(notNullCondition, notDefinedCondition, LogicalExpression.OP_AND);
+}
+
+function isStringHandler(node){
+
+  let identifier = node.arguments[0];
+
+  let isStringCondition = new BinaryExpression(
+    new UnaryExpression(true, UnaryExpression.TYPEOF, identifier),
+    new Literal('string'),
+    BinaryExpression.OP_EQUAL
+  );
+
+  return isStringCondition;
 }
 
 function googRequireHandler(callExpressionNode){
@@ -399,7 +414,7 @@ function getAnnotationForTypeDef(node, annotation, param1){
 }
 
 function getTypeAst(annotation, type, identifier /* optional */){
-
+  console.log(type);
   let ast = null, dummyStr, dummyAst;
 
   switch(annotation){

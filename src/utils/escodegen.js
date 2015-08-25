@@ -562,16 +562,28 @@ function getNotationString(notation){
         case 'StringTypeAnnotation' :
             return 'string';
         case 'ObjectTypeAnnotation' :
-            let properties = notation.properties;
             let resultObj = '{' + newline;
+
+            let properties = notation.properties;
             for(let i=0; i<properties.length; i++){
                 resultObj += getNotationString(properties[i]);
             }
+
+            let indexers = notation.indexers;
+            for(let i=0; i<indexers.length; i++){
+              resultObj += getNotationString(indexers[i]);
+            }
+
             return resultObj + '}';
+        case 'ObjectTypeIndexer' :
+            let id = notation.id.name;
+            let key = getNotationString(notation.key);
+            let valueI = getNotationString(notation.value);
+            return indent + '[' + id + ': '+ key + ']: ' + valueI + '; ' + newline;
         case 'ObjectTypeProperty' :
-            let name = notation.key.name;
-            let value = getNotationString(notation.value);
-            return indent + name + ': ' + value + '; ' + newline;
+          let name = notation.key.name;
+          let valueP = getNotationString(notation.value);
+          return indent + name + ': ' + valueP + '; ' + newline;
         case 'GenericTypeAnnotation' : {
             if(notation.id && notation.id.type === 'Identifier'){
                 let result = notation.id.name;
@@ -593,16 +605,16 @@ function getNotationString(notation){
         }
         case 'UnionTypeAnnotation' : {
             var types = notation.types;
-            var result = '';
+            var resultU = '';
             for(var tp=0; tp<types.length; tp++){
-                result += getNotationString(types[tp]);
-                if(tp < types.length-1) result+= ' | ';
+              resultU += getNotationString(types[tp]);
+                if(tp < types.length-1) resultU+= ' | ';
             }
-            return result;
+            return resultU;
         }
         case 'NullableTypeAnnotation' : {
-            var result = '?';
-            return result + getNotationString(notation.typeAnnotation);
+            var resultNull = '?';
+            return resultNull + getNotationString(notation.typeAnnotation);
         }
 
     }
@@ -668,7 +680,7 @@ function adjustMultilineComment(value, specialBase) {
     spaces = Number.MAX_VALUE;
 
     // first line doesn't have indentation
-    for (i = 1, len = array.length; i < len; ++i) {
+    for (i = 0, len = array.length; i < len; ++i) {
         line = array[i];
         j = 0;
         while (j < line.length && esutils.code.isWhiteSpace(line.charCodeAt(j))) {
@@ -703,7 +715,7 @@ function adjustMultilineComment(value, specialBase) {
         previousBase = base;
     }
 
-    for (i = 1, len = array.length; i < len; ++i) {
+    for (i = 0, len = array.length; i < len; ++i) {
         sn = toSourceNodeWhenNeeded(addIndent(array[i].slice(spaces)));
         array[i] = sourceMap ? sn.join("") : sn;
     }

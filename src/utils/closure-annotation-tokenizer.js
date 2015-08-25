@@ -20,16 +20,11 @@ const STATE = {
 export default
 class ClosureAnnotationTokenizer {
 
-  constructor(options){
+  constructor(){
 
-    this.options = merge(this.constructor.defaultOptions, options);
     this.importedTypes = {};
-
     this.ANNOTATION = ANNOTATION;
-
     this.groupAnnotation = {};
-    this.normalizer = this.constructor.normalizerMethod(this.importedTypes);
-
   }
 
   tokenize(js, previousToken) {
@@ -69,8 +64,17 @@ class ClosureAnnotationTokenizer {
       if(!this.groupAnnotation.hasOwnProperty(tokenObject.annotation)){
         this.groupAnnotation[tokenObject.annotation] = {};
       }
-      let id = (tokenObject.annotation === '@param' )?tokenObject.param2:'param1';
-      this.groupAnnotation[tokenObject.annotation][id] = tokenObject.param1;
+      let id = 'param1', value = tokenObject.param1;
+      if(tokenObject.annotation === '@param' ){
+        if(tokenObject.param2 === ''){
+          id = tokenObject.param1;
+          value = 'any';
+        }else{
+          id = tokenObject.param2;
+        }
+      }
+
+      this.groupAnnotation[tokenObject.annotation][id] = value;
     }
   }
 
@@ -120,9 +124,9 @@ class ClosureAnnotationTokenizer {
           }
           break;
         default :
-          if (section[pos] === '{') {
+          if (section[pos] === '{' || section[pos] === '<' || section[pos] === '(') {
             bracketMemory++;
-          } else if (section[pos] === '}') {
+          } else if (section[pos] === '}' || section[pos] === '>' || section[pos] === ')') {
             bracketMemory--;
           }
           if (curState === STATE.READING_ANNOTATION) {
@@ -150,125 +154,189 @@ class ClosureAnnotationTokenizer {
     let _tokens = tokens;
     for(let i=0; i<_tokens.length; i++){
       _tokens[i].param1 = this._normalizeStr(_tokens[i].param1);
-      _tokens[i].param2 = this._normalizeStr(_tokens[i].param2);
     }
     return _tokens;
   }
 
   _normalizeStr(str){
+    let self = this;
+
+    function _typeToken(type){
+
+      type = self._replaceWithAny(type);
+      type = self._removeNameSpace(type);
+
+      return type;
+    }
+
     let result = str;
-    let normalizer = this.options.normalizer;
 
-    result = this.normalizer.handleOptional(result);
-    // Force return 'Function' if found function type
-    let replaceFunctionType = this.normalizer.replaceFunctionType(result);
-    if(replaceFunctionType){
-      return replaceFunctionType;
-    }
+    result = self._removeUnusedChar(result);
+    result = self._removeWrapBracket(result);
+    result = self._replaceEqualToQuestionMark(result);
+    result = self._removeGenericDot(result);
+    result = self._replaceFunctionType(result);
 
-    if(normalizer.removeGenericTypeDot){
-      result = this.normalizer.removeGenericTypeDot(result);
-    }
+    let regExp = new RegExp(/([^{}|\s:,<>()]*)/g);
+    result = result.replace(regExp, _typeToken);
 
-    if(normalizer.removeWrapBracket){
-      result = this.normalizer.removeWrapBracket(result);
-    }
+    result = self._handleMap(result);
+    result = this._containNull(result); // TODO : improve contain null, considered hacky
 
-    if(normalizer.removeNamespace){
-      result = this.normalizer.removeNamespace(result);
+    result = self._specialCaseHandler(result); // TODO : hacky
+
+    return result;
+  }
+
+  _specialCaseHandler(result){
+    let regExpAny = new RegExp(/any\([a-z0-9]*\)/ig); // any(...)
+    result = result.replace(regExpAny, (match, type) => '?' + type);
+
+    let regExpTypedFunction = new RegExp(/(function)[\s]*:[\s]*[a-zA-Z0-9]*/ig); //function:boolean
+    result = result.replace(regExpTypedFunction, (match, type) => type);
+
+    let regExpAnyWraping = new RegExp(/any({[a-z:,<>()\s\|]*})/ig); //any{...}
+    result = result.replace(regExpAnyWraping, (match, type) => '?' + type);
+
+    let regExpBackQMark = new RegExp(/([a-z0-9]*)\?/ig); // ...?
+    result = result.replace(regExpBackQMark, (match, type) => '?' + type);
+
+    let regExpTypeGroup = new RegExp(/\([a-z,\s]*\)/ig); // (..., ..., ...)
+    result = result.replace(regExpTypeGroup, (match) => 'any');
+
+    let regExpComplexObject = new RegExp(/Object<[a-z0-9,<>:\s]*>/ig); // Object<string,Object<string,Object<string,Array<string>>>>
+    result = result.replace(regExpComplexObject, (match) => 'Object');
+
+    if(result === ''){
+      result = 'any';
     }
 
     return result;
   }
 
-}
-
-ClosureAnnotationTokenizer.defaultOptions = {
-  normalizer : {
-    removeGenericTypeDot : true,
-    removeWrapBracket : true,
-    removeNamespace : true
+  _removeUnusedChar(str){
+    let result = str.replace(/\!/g,'');
+    return result;
   }
-};
 
-ClosureAnnotationTokenizer.normalizerMethod = function(importedTypes){
-
-  let handleOptional = function(str){
-    if(str.indexOf('=') !== -1){
-      let alt = str.replace('/\=/g', '');
-      alt = alt.split('|');
-      alt = alt.map((s) => '?'+s );
-      str = alt.join('|');
+  _handleMap(type){
+    let self = this;
+    function replacerMap(match, open, key, separator, value, close){
+      open = '{ ';
+      close = ' }';
+      key = self._containNull(key);
+      value = self._containNull(value);
+      key = '[key : ' + key + ']';
+      separator = ': ';
+      return [open, key, separator, value, close].join('');
     }
 
-    return str;
-  };
+    let regExp = new RegExp(/[a-zA-Z0-9]*[\s]*(<)[\s]*([\|a-zA-Z0-9_]*)[\s]*(,)[\s]*([\|a-zA-Z0-9_]*)[\s]*(>)/g);
+    return type.replace(regExp, replacerMap);
+  }
 
-  let replaceFunctionType = function(str){
-    if(str.indexOf('function') !== -1) {
-      return ((str.indexOf('?') !==-1 )?'?':'')+'Function';
-    }else{
-      return false;
-    }
-  };
 
-  let removeGenericTypeDot = function(str){
-    return str.replace(/\.</g, '<');
-  };
 
-  let removeWrapBracket = function(str){
-    if(str[0] === '{' && str[str.length-1] === '}'){
-      return str.substring(1, str.length-1);
-    }else{
-      return str;
-    }
-  };
-
-  let replaceStar = function(str){
-    return str.replace(/\*/g, 'any');
-  };
-
-  let removeNamespace = function(str){
-    // Only get proceed if dot char have been normalized
-    let noDotStr = removeGenericTypeDot(str);
-
-    let newStr = noDotStr.replace(/([^ :,{}<>]*)/g, replacer);
-    newStr = replaceStar(newStr);
-
-    return newStr;
-  };
-
-  //Also replace null with ?
-  function replacer(match) {
-    let alt = match.split('|');
-    let result = [];
-    let containNull = false;
-    for(let i=0; i<alt.length; i++){
-      let splitStr = alt[i].split('.');
-      if(splitStr.length > 1){
-        importedTypes[alt[i]] = 1;
-        result.push(splitStr[splitStr.length-1]);
-      }else{
-        if(alt[i] === 'null') {
-          containNull = true;
-        }
-        result.push(alt[i]);
+  _replaceEqualToQuestionMark(type){
+    let result = type;
+    if(type.indexOf('=') !== -1){
+      if(type !== '' && type.indexOf('?') === -1){
+        result = '?'+result;
       }
+      return result.replace(/=/g,'');
     }
+
+    return result;
+  }
+
+  _replaceFunctionType(type){
+    var keyword = 'function';
+    var functionPos = type.indexOf(keyword);
+    var lastIndex = type.length;
+    var resultType = type;
+    while(functionPos !== -1){
+      var nextId = functionPos+keyword.length;
+      var token = type.substring(functionPos, nextId);
+      var bracketCount = 0;
+      while(nextId < lastIndex){
+        var w = type[nextId];
+        token += w;
+        if(w === '(' || w === '<' || w === '{'){
+          bracketCount++;
+        }else if(w === ')' || w === '>' || w === '}'){
+          bracketCount--;
+        }
+
+        if((w === ',' || w === ' ' || w === ')' ) && bracketCount === 0 && token.trim() !== keyword){
+          break;
+        }
+        nextId++;
+      }
+      resultType = resultType.replace(token, 'Function');
+      functionPos = type.indexOf(keyword, nextId);
+    }
+
+    return resultType;
+  }
+
+  _removeGenericDot(type){
+    return type.replace(/\.</g, '<');
+  }
+
+  _removeWrapBracket(type){
+    if(type[0] === '{' && type[type.length-1] === '}'){
+      return type.substring(1, type.length-1);
+    }
+    return type;
+  }
+
+  _replaceWithAny(type){
+    if(type === '?' || type === '*'){
+      return 'any';
+    }else if(type === '?*'){
+      return '?any';
+    }
+    return type;
+  }
+
+  _removeNameSpace(type){
+    let hadQuestionMark = type.indexOf('?') !== -1;
+    let cleanType = type.replace(/\?/g,'');
+    let splitStr = cleanType.split('.');
+    let result = type;
+    if(splitStr.length > 1){
+      this.importedTypes[cleanType] = 1;
+      result = ((hadQuestionMark)?'?':'') + splitStr[splitStr.length-1];
+    }
+
+    return result;
+  }
+
+  _containNull(str){ //TODO : Error
+    if(str.indexOf('null') !== -1){
+      let regExp = new RegExp(/([^ \s:,{}<>()]*)/g);
+      return str.replace(regExp, this._replaceNull);
+    }
+    return str;
+  }
+
+  _replaceNull(type){
+    let alt = type.split('|');
+    let result = [];
+    let containNull = alt.indexOf('null') !== -1;
+    result = alt.filter((s) => s !== 'null');
     if(containNull){
-      result = result.filter((s) => s !== 'null');
-      result = result.map((s) => '?'+s );
+      result = result.map(function(s){
+
+        if(s.indexOf('?') === -1){
+          return '?'+result;
+        }
+        return result;
+
+      });
     }
 
     return result.join('|');
   }
 
-  return {
-    removeGenericTypeDot : removeGenericTypeDot,
-    removeWrapBracket : removeWrapBracket,
-    removeNamespace : removeNamespace,
-    importedTypes : importedTypes,
-    replaceFunctionType : replaceFunctionType,
-    handleOptional : handleOptional
-  };
-};
+}

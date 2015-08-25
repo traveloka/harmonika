@@ -22,7 +22,7 @@ module.exports = function (options) {
   for(var i=0; i<options.files.length; i++){
     var file = options.files[i];
 
-
+    console.log(('Parsing "' + file + '"...'));
     transformer.readFile(file);
     transformer.applyTransformations();
 
@@ -40,7 +40,7 @@ module.exports = function (options) {
 
     outputFile = path.join(options.outFolder, sourceFileName);
     transformer.writeFile(outputFile);
-    console.log(('The file "' + outputFile + '" has been written.').green);
+    console.log(('done').green);
 
     if(transOptions.transformers.generateTest) {
       var testFileName = path.join(testDir, outputFileName);
@@ -50,8 +50,6 @@ module.exports = function (options) {
 
       var outputTestFile = path.join(options.outFolder, testFileName);
       transformer.writeTestFile(outputTestFile);
-
-      console.log(('The test file "' + outputTestFile + '" has been written.').yellow);
     }
 
 

@@ -52,9 +52,9 @@ if (!files.length) {
 
 
 if (!outFolder || outFolder === true)
-  outFolder = '../output_files';
+  outFolder = process.cwd()+'/output_files';
 
-var outFolderName = path.join(path.dirname(files[0]), outFolder);
+var outFolderName = outFolder;
 if(!fs.existsSync(outFolderName)){
   fs.mkdirSync(outFolderName);
 }

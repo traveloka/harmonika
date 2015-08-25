@@ -42,6 +42,12 @@ grunt.initConfig({
         reporter: 'spec'
       },
       src: ['test/**/*.js']
+    },
+    testTokenizer: {
+      options: {
+        reporter: 'spec'
+      },
+      src: ['test/util/*.js']
     }
   },
   browserify: {
@@ -54,5 +60,6 @@ grunt.initConfig({
 });
 
 grunt.registerTask('default', ['clean', 'babel']);
-grunt.registerTask('test', ['jshint', 'default', 'mochaTest']);
+grunt.registerTask('test', ['jshint', 'default', 'mochaTest:test']);
+grunt.registerTask('testTokenizer', ['mochaTest:testTokenizer']);
 grunt.registerTask('build-demo', ['test', 'browserify']);
