@@ -16,6 +16,8 @@ $ node bin/index.js --help
 ## Sample Usage
 ```bash
 $ node bin/index.js -s input_files/sample2.js
+or
+$ harmonika  -s input_files/sample2.js
 ```
 
 ## Directory Structure

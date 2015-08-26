@@ -9,9 +9,9 @@ var glob = require("glob");
 var path = require("path");
 var colors = require('colors');
 
-var program = new commander.Command('cltofl');
+var program = new commander.Command('harmonika');
 
-program.option("-s, --source <file/folder>", "Source to convert from ES5 to ES6 i.e. cltofl -s src");
+program.option("-s, --source <file/folder>", "Source to convert from ES5 to ES6 i.e. harmonika -s src");
 program.option("-o, --out-folder [out]", "output folder (ouput file will be the same name)");
 program.option("--no-classes", "Don't convert function/prototypes into classes");
 program.description(pkg.description);

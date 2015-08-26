@@ -1,22 +1,23 @@
 {
-  "name": "ES5toES6",
+  "name": "harmonika",
   "version": "0.0.1",
-  "description": "ES5toES6 parse your ES5 code to ES6. Based on existing project with the same purpose xto6 with additional on-going features.",
-  "main": "index.js",
+  "description": "harmonika parse your ES5 code to ES6. Based on existing project with the same purpose xto6 with additional on-going features.",
+  "main": "./bin/index.js",
   "engines": {
     "node": ">=0.10"
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/traveloka-engineering-team/es5toes6/"
+    "url": "https://github.com/semmatabei/harmonika"
   },
   "bin": {
-    "xto6": "./bin/index.js"
+    "harmonika": "./bin/index.js"
   },
   "keywords": [
     "es5",
     "es6",
     "transpiler",
+    "closure",
     "transpile"
   ],
   "author": "Sem Matabei <sem.matabei@gmail.com>",
