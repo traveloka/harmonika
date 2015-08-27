@@ -4,20 +4,23 @@
 
 **Harmonika** parse your Closure code to ES6. Extended from existing project [xto6](https://github.com/mohebifar/xto6), with additional on-going features to support Closure.
 
-## Usage
-Clone this project
+## Install
+```bash
+$ npm install harmonika
+```
+
+## Run Example
+```bash
+$ harmonika  -s input_files/sample2.js
+```
+
+## Developing
+Clone from [github](https://github.com/semmatabei/harmonika)
 
 ```bash
 $ npm install
 $ grunt
 $ node bin/index.js --help
-```
-
-## Sample Usage
-```bash
-$ node bin/index.js -s input_files/sample2.js
-or
-$ harmonika  -s input_files/sample2.js
 ```
 
 ## Directory Structure

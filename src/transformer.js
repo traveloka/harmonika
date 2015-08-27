@@ -61,16 +61,11 @@ class Transformer {
     };
 
     doTransform('closureParser', closureParserTransformation, {}, function(fileName){
-      if(fileName) {
-        self.fileName = fileName;
-      }
+      if(fileName) {self.fileName = fileName; }
     });
 
     doTransform('namespaceRemoval', namespaceRemovalTransformation);
-
-    let defaultImportSource = this.options.defaultImportSource;
-    doTransform('implicitImporter', implicitImporterTransformation, {defaultImportSource : defaultImportSource});
-
+    doTransform('implicitImporter', implicitImporterTransformation, {defaultImportSource : this.options.defaultImportSource});
     doTransform('classes', classTransformation);
     doTransform('stringTemplates', templateStringTransformation);
     doTransform('arrowFunctions', arrowFunctionTransformation);
