@@ -11,7 +11,7 @@ $ npm install harmonika
 
 ## Run Example
 ```bash
-$ harmonika  -s input_files/sample2.js
+$ harmonika  -s input_files/ins/sample0.js
 ```
 
 ## Developing
