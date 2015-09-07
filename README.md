@@ -2,7 +2,8 @@
 
 ![Harmonika](https://dl.dropboxusercontent.com/u/9834816/harmonika.png)
 
-**Harmonika** parse your Closure code to ES6. Extended from existing project [xto6](https://github.com/mohebifar/xto6), with additional on-going features to support Closure.
+**Harmonika** parse your Google Closure (and/or ES5) code to ES6. 
+Extended from existing project [xto6](https://github.com/mohebifar/xto6), with additional on-going features to support Closure.
 
 ## Install
 ```bash
@@ -36,7 +37,23 @@ $ node bin/index.js --help
 * test /
 ```
 
-## Previous project existing features
+## Configuration
+
+### Transformer
+| Config    | Default           | Description  |
+| ------------- |:-------------:| -----:|
+| classes | true | Transform function with prototype to class
+| stringTemplates | true | Convert Expression to ES6 string template if applicable
+| arrowFunctions | true | Convert Expression to ES6 arrow function if applicable
+| let | true | Convert var to let/const
+| defaultArguments | true | Add ES6 default arguments if applicable
+| namespaceRemoval | true | Remove any google closure/javascript namespace and create output file structure based on namespace
+| closureParser | true | Remove any google closure syntax
+| implicitImporter | true | Add import statement for undefined object
+| generateTest | false | generate test file for each parsed file
+| generateExport | true | generate export module
+
+## Previous project existing features (xto6)
 * Function/Prototypes to Classes
 * Callback to Arrow functions
 * String concatenation to Template Strings
@@ -44,7 +61,7 @@ $ node bin/index.js --help
 * Default arguments instead of `a = a || 2`
 * Function properties in objects to Object methods
 
-## Added features
+## Added features (Harmonika)
 - Remove Namespace
 - Convert Google Closure code (`goog.require`, `goog.provide`, `goog.inherits`, `goog.isDefinedAndNotNull`) to compatible ES6 features
 - Convert Closure annotation to Flow type (Currently support : `@param`, `@type`, `@typedef`, `@return`) and Import/Export type
