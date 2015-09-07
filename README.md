@@ -42,9 +42,9 @@ $ node bin/index.js --help
 ### Transformer
 | Config    | Default           | Description  |
 | ------------- |:-------------:| -----:|
-| classes | true | Transform function with prototype to class
-| stringTemplates | true | Convert Expression to ES6 string template if applicable
-| arrowFunctions | true | Convert Expression to ES6 arrow function if applicable
+| classes | true | Transform functions with prototype to class
+| stringTemplates | true | Convert Expressions to ES6 string template if applicable
+| arrowFunctions | true | Convert Expressions to ES6 arrow function if applicable
 | let | true | Convert var to let/const
 | defaultArguments | true | Add ES6 default arguments if applicable
 | namespaceRemoval | true | Remove any google closure/javascript namespace and create output file structure based on namespace
