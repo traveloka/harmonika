@@ -15,6 +15,20 @@ $ npm install harmonika
 $ harmonika  -s input_files/ins/sample0.js
 ```
 
+## Usage Example
+```javascript
+var transOptions = {
+    transformers: {
+        classes : true
+    }
+};
+  
+var transformer = new Transformer(transOptions);
+transformer.readFile(file);
+transformer.applyTransformations();
+transformer.writeFile(outputFile);
+```
+
 ## Developing
 Clone from [github](https://github.com/traveloka/harmonika)
 
