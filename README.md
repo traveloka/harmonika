@@ -1,4 +1,4 @@
-# Harmonika
+# Harmonika [![Build Status](https://travis-ci.org/traveloka/harmonika.svg)](https://travis-ci.org/traveloka/harmonika)
 
 ![Harmonika](https://dl.dropboxusercontent.com/u/9834816/harmonika.png)
 
