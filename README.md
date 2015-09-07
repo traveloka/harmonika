@@ -16,7 +16,7 @@ $ harmonika  -s input_files/ins/sample0.js
 ```
 
 ## Developing
-Clone from [github](https://github.com/semmatabei/harmonika)
+Clone from [github](https://github.com/traveloka/harmonika)
 
 ```bash
 $ npm install
