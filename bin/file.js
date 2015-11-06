@@ -5,10 +5,7 @@ var mkdirp = require('mkdirp');
 
 module.exports = function (options) {
   var transOptions = {
-    transformers: {
-      generateTest : true
-    },
-    addExport : true
+
   };
 
 
@@ -42,7 +39,7 @@ module.exports = function (options) {
     transformer.writeFile(outputFile);
     console.log(('done').green);
 
-    if(transOptions.transformers.generateTest) {
+    if(transOptions.transformers && transOptions.transformers.generateTest) {
       var testFileName = path.join(testDir, outputFileName);
       var testDirname = path.dirname(testFileName);
       var completeTestDirName = path.join(options.outFolder, testDirname);

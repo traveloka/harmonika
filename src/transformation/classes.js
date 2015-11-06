@@ -204,7 +204,9 @@ function classMaker(node, parent) {
   if (node.type === 'AssignmentExpression') {
 
     let staticMethodCandidate = node.left.object && classDefined(node.left.object);
-    if (node.left.object && ((node.left.object.property && node.left.object.property.name === 'prototype') || staticMethodCandidate)) {
+    if (node.left.property && node.left.property.name === 'constructor') {
+      parent._remove = true;
+    } else if (node.left.object && ((node.left.object.property && node.left.object.property.name === 'prototype') || staticMethodCandidate)) {
 
       let functionName = null;
       if(staticMethodCandidate) {
@@ -218,59 +220,61 @@ function classMaker(node, parent) {
         if (_function.id.name === functionName) {
           createClass(_function);
 
-          let method = node.right;
-          let createdMethod = new MethodDefinition();
-          createdMethod.leadingComments = parent.leadingComments;
-          if(method.returnType){
-            createdMethod.returnType = method.returnType;
+          if (!(node.left.property && node.left.property.type === 'Identifier' && node.left.property.name === 'prototype')) {
+            let method = node.right;
+            let createdMethod = new MethodDefinition();
+            createdMethod.leadingComments = parent.leadingComments;
+            if(method.returnType){
+              createdMethod.returnType = method.returnType;
+            }
+
+            if (method.type === 'Identifier') {
+
+              createdMethod.body =
+                new ReturnStatement(
+                  new CallExpression(
+                    new MemberExpression(
+                      node.right,
+                      new Identifier('apply')
+                    ), [
+                      new ThisExpression(),
+                      new Identifier('arguments')
+                    ]
+                  )
+                );
+
+            } else if(method.type !== 'FunctionExpression'){
+              let localIdentifier = new Identifier('_'+node.left.property.name);
+              createdMethod.kind = 'get';
+              createdMethod.body = new ReturnStatement(localIdentifier);
+
+              let variableDeclarator = new VariableDeclarator();
+              variableDeclarator.id = localIdentifier;
+              variableDeclarator.init = node.right;
+
+              let variableDeclaration = new VariableDeclaration();
+              variableDeclaration.addDeclaration(variableDeclarator);
+              externalData.push(variableDeclaration);
+
+            }else {
+              createdMethod.body = method.body;
+              createdMethod.params = method.params;
+            }
+
+            createdMethod.name = node.left.property.name;
+            if(staticMethodCandidate) {
+              createdMethod.static = true;
+            }
+
+            _function.class.body.addMethod(createdMethod);
+
+
+
           }
-
-          if (method.type === 'Identifier') {
-
-            createdMethod.body =
-              new ReturnStatement(
-                new CallExpression(
-                  new MemberExpression(
-                    node.right,
-                    new Identifier('apply')
-                  ), [
-                    new ThisExpression(),
-                    new Identifier('arguments')
-                  ]
-                )
-              );
-
-          } else if(method.type !== 'FunctionExpression'){
-            let localIdentifier = new Identifier('_'+node.left.property.name);
-            createdMethod.kind = 'get';
-            createdMethod.body = new ReturnStatement(localIdentifier);
-
-
-            let variableDeclarator = new VariableDeclarator();
-            variableDeclarator.id = localIdentifier;
-            variableDeclarator.init = node.right;
-
-            let variableDeclaration = new VariableDeclaration();
-            variableDeclaration.addDeclaration(variableDeclarator);
-            externalData.push(variableDeclaration);
-
-          }else {
-            createdMethod.body = method.body;
-            createdMethod.params = method.params;
-          }
-
-          createdMethod.name = node.left.property.name;
-          if(staticMethodCandidate) {
-            createdMethod.static = true;
-          }
-
-          _function.class.body.addMethod(createdMethod);
-
           parent._remove = true;
-
           this.skip();
-
         }
+
 
       }
 

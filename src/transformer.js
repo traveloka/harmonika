@@ -222,11 +222,11 @@ Transformer.defaultOptions = {
     classes: true,
     stringTemplates: true,
     arrowFunctions: true,
-    let: true,
+    let: false,
     defaultArguments: true,
     objectMethods: true,
     namespaceRemoval : true,
-    closureParser : true,
+    closureParser : false,
     implicitImporter: true,
     generateTest : false,
     generateExport : true

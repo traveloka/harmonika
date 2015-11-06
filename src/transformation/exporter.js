@@ -3,8 +3,8 @@
  */
 import ExportDeclaration from './../syntax/export-declaration.js';
 import Identifier from './../syntax/identifier.js';
-import GenericTypeAnnotation from './../syntax/generic-type-annotation.js';
-import TypeAlias from './../syntax/type-alias.js';
+// import GenericTypeAnnotation from './../syntax/generic-type-annotation.js';
+// import TypeAlias from './../syntax/type-alias.js';
 
 export default
   function (ast, param, callback) {
@@ -134,11 +134,11 @@ function replaceClassAndGlobalVariable(node){
         if(node.type === 'VariableDeclaration'){
           itemToDefaultExport = node.declarations[0].id.name;
           return false;
-        }else if(node.type === 'ClassDeclaration'){
-          let annotation = new GenericTypeAnnotation(node.id.name);
-          let typeAlias = new TypeAlias(node.id.name, annotation);
-          itemToExportAsAlias.push(typeAlias);
-        }
+        } // else if(node.type === 'ClassDeclaration'){
+          // let annotation = new GenericTypeAnnotation(node.id.name);
+          // let typeAlias = new TypeAlias(node.id.name, annotation);
+          // itemToExportAsAlias.push(typeAlias);
+        //}
 
       }
 

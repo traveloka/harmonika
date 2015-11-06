@@ -19,14 +19,14 @@ describe('Comments', function () {
   it("shouldn't convert comment line", function (done) {
     var script = '// comment line\nvar x = 42;';
 
-    expect(test(script)).to.equal('// comment line\nconst x = 42;');
+    expect(test(script)).to.equal('// comment line\nvar x = 42;');
     done();
   });
 
   it("should remove trailing comment", function (done) {
     var script = 'var x = 42;    // trailing comment\n';
 
-    expect(test(script)).to.equal('const x = 42;');
+    expect(test(script)).to.equal('var x = 42;');
     done();
   });
 
